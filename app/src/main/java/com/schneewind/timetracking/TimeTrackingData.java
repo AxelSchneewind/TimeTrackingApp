@@ -1,13 +1,14 @@
 package com.schneewind.timetracking;
 
 import android.content.Context;
+import android.os.Environment;
 
 import java.util.ArrayList;
 
 public class TimeTrackingData {
     Context context;
 
-    ArrayList<TimeTracker> trackers = new ArrayList<TimeTracker>();
+    ArrayList<TimeTracker> trackers = new ArrayList<>();
 
     public TimeTrackerListAdapter listAdapter;
 
@@ -34,11 +35,12 @@ public class TimeTrackingData {
         }
         FileHelper fileHelper = new FileHelper(context);
         fileHelper.writeToDefaultFile(data);
+        //fileHelper.writeToExternalFile(Environment.getExternalStorageDirectory().toString(), data);
     }
 
     /**
      * adds a given amount of time to all active trackers
-     * @param time
+     * @param time time in seconds
      */
     public void addTimeToAllTrackers(int time){
         for (TimeTracker tracker : trackers) {
@@ -56,8 +58,8 @@ public class TimeTrackingData {
 
     /**
      * Returns the timetracker at the given index in the list
-     * @param index
-     * @return
+     * @param index index of the timetracker in the list
+     * @return the TimeTracker object at the given index
      */
     public TimeTracker getTimeTracker(int index){
         return trackers.get(index);

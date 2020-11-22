@@ -1,6 +1,8 @@
 package com.schneewind.timetracking;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -8,6 +10,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.view.View;
@@ -27,12 +31,7 @@ public class MainActivity extends AppCompatActivity {
             super.run();
             while(!isInterrupted()){
                 timeTrackingData.addTimeToAllTrackers(1);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        timeTrackingData.listAdapter.notifyDataSetChanged();
-                    }
-                });
+                runOnUiThread(() -> timeTrackingData.listAdapter.notifyDataSetChanged());
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -54,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         timeTrackingData.writeTrackersToDefaultFile();
     }
 
@@ -64,23 +64,21 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        timeTrackingData = new TimeTrackingData(getApplicationContext());
+        timeTrackingData = new TimeTrackingData(MainActivity.this);
         timeTrackingData.readTrackersFromDefaultFile();
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, NewTimeTrackerActivity.class);
-                MainActivity.this.startActivity(intent);
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, NewTimeTrackerActivity.class);
+            MainActivity.this.startActivity(intent);
 
-                timeTrackingData.addTimeTracker(new TimeTracker("Test" + timeTrackingData.getTrackerCount()));
-                timeTrackingData.writeTrackersToDefaultFile();
+            timeTrackingData.addTimeTracker(new TimeTracker("Test" + timeTrackingData.getTrackerCount()));
 
-                Snackbar.make(view, "Added a new TimeTracker", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
+            timeTrackingData.writeTrackersToDefaultFile();
+
+            Snackbar.make(view, "Added a new TimeTracker", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
         });
     }
 
