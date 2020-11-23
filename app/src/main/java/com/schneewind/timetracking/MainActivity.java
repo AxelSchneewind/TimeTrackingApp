@@ -1,26 +1,41 @@
 package com.schneewind.timetracking;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class MainActivity extends AppCompatActivity{
 
     public TimeTrackingData timeTrackingData;
 
@@ -53,9 +68,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
         timeTrackingData.writeTrackersToDefaultFile();
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +86,9 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, NewTimeTrackerActivity.class);
-            MainActivity.this.startActivity(intent);
+            MainActivity.this.startActivityForResult(intent, 100);
 
-            timeTrackingData.addTimeTracker(new TimeTracker("Test" + timeTrackingData.getTrackerCount()));
+            timeTrackingData.addTimeTracker(new TimeTracker("Tracker " + timeTrackingData.getTrackerCount()));
 
             timeTrackingData.writeTrackersToDefaultFile();
 
@@ -101,6 +116,67 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.action_export){
+            timeTrackingData.exportTrackers();
+
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * writes set of a bytes to any file in devices storage
+     * !Function cant handle invalid paths(no permission, etc.)
+     * @param path target directory
+     * @param filename name of the new file
+     * @param bytes content of the file
+     */
+    public void writeBytesToFile(File path, String filename, byte[] bytes){
+        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 10);
+            return;
+        }
+
+        try {
+            File file = new File(path, filename);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            fileOutputStream.write(bytes);
+            fileOutputStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * reads the content of a given file and returns an array of bytes
+     * @param path target directory
+     * @param filename name of the file
+     * @return an array of bytes
+     */
+    public byte[] readBytesOfFile(File path, String filename){
+        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 10);
+            return null;
+        }
+
+        String string = "";
+        try {
+            FileInputStream fileInputStream = new FileInputStream(new File(path, filename));
+            BufferedReader  reader = new BufferedReader(new InputStreamReader(fileInputStream));
+
+            StringBuffer sb = new StringBuffer();
+            String line = reader.readLine();
+            while (line != null) {
+                sb.append(line + "\n");
+                line = reader.readLine();
+            }
+            string = sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return string.getBytes();
     }
 }

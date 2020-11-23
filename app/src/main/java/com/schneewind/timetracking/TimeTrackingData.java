@@ -1,12 +1,13 @@
 package com.schneewind.timetracking;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 
 import java.util.ArrayList;
 
 public class TimeTrackingData {
-    Context context;
+    MainActivity mainActivity;
 
     ArrayList<TimeTracker> trackers = new ArrayList<>();
 
@@ -16,7 +17,7 @@ public class TimeTrackingData {
      * reads Trackers from the default file and stores them in this TimeTrackingData object
      */
     public void readTrackersFromDefaultFile(){
-        FileHelper fileHelper = new FileHelper(context);
+        FileHelper fileHelper = new FileHelper(mainActivity);
         String data = fileHelper.readFromDefaultFile();
         String[] trackerStrings = data.split("\n");
 
@@ -33,9 +34,21 @@ public class TimeTrackingData {
         for (TimeTracker tracker : trackers) {
             data = data.concat(tracker.toSaveableString() + "\n");
         }
-        FileHelper fileHelper = new FileHelper(context);
+        FileHelper fileHelper = new FileHelper(mainActivity);
         fileHelper.writeToDefaultFile(data);
-        //fileHelper.writeToExternalFile(Environment.getExternalStorageDirectory().toString(), data);
+    }
+
+    /**
+     * creates FileHelper and uses its export function
+     */
+    public void exportTrackers(){
+        String data = new String();
+        for (TimeTracker tracker : trackers) {
+            data = data.concat(tracker.toSaveableString() + "\n");
+        }
+
+        FileHelper fileHelper = new FileHelper(mainActivity);
+        fileHelper.writeToExternalFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "export.txt", data);
     }
 
     /**
@@ -79,7 +92,7 @@ public class TimeTrackingData {
 
     public int getTrackerCount(){ return trackers.size(); }
 
-    public TimeTrackingData(Context context){
-        this.context = context;
+    public TimeTrackingData(MainActivity mainActivity){
+        this.mainActivity = mainActivity;
     }
 }
