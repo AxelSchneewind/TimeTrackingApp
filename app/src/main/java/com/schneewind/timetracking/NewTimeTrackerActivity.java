@@ -23,9 +23,8 @@ public class NewTimeTrackerActivity extends AppCompatActivity {
                 String _target = ((EditText)findViewById(R.id.tracker_target)).getText().toString();
                 String _initial = ((EditText)findViewById(R.id.tracker_initial_value)).getText().toString();
 
-                if(_target == "") _target = "10";
-                if(_initial == "") _initial = "0";
-
+                if(_target.equals("")) _target = "0";
+                if(_initial.equals("")) _initial = "0";
                 int target = Integer.parseInt(_target);
                 int initial = Integer.parseInt(_initial);
 
