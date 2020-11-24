@@ -2,12 +2,13 @@
 <resources>
     <string name="app_name">TimeTracking</string>
     <string name="action_settings">EInstellungen</string>
-    <string name="first_fragment_label">Neuer TimeTracker</string>
+    <string name="first_fragment_label">TrackerListe</string>
     <string name="next">Weiter</string>
-    <string name="previous">Zurücl</string>
+    <string name="previous">Zurück</string>
     <string name="newtracker_name">Name</string>
     <string name="newtracker_add">Add</string>
     <string name="newtracker_target">Ziel (in Stunden)</string>
-    <string name="newtracker_initialvalue">Startwert (in Studen)</string>
+    <string name="newtracker_initialvalue">Startwert (in Stunden)</string>
     <string name="second_fragment_label">Details</string>
+    <string name="newtracker_label">Neuer TimeTracker</string>
 </resources>

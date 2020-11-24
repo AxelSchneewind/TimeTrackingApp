@@ -2,7 +2,7 @@
     <string name="app_name">TimeTracking</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">New TimeTracker</string>
+    <string name="first_fragment_label">TrackerList</string>
     <string name="second_fragment_label">Details</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
@@ -11,4 +11,5 @@
     <string name="newtracker_add">Add</string>
     <string name="newtracker_target">Target (in hours)</string>
     <string name="newtracker_initialvalue">Initial value (in hours)</string>
+    <string name="newtracker_label">New TimeTracker</string>
 </resources>

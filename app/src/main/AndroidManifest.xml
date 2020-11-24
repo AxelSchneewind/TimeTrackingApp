@@ -13,14 +13,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TimeTracking">
-        <activity android:name=".NewTimeTrackerActivity"></activity>
+        <activity
+            android:name=".NewTimeTrackerActivity"
+            android:theme="@style/Theme.AppCompat.Transparent"
+            android:label="@string/newtracker_label" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.TimeTracking.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.schneewind.timetracking.SecondFragment"
+        android:name="com.schneewind.timetracking.DetailViewFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_detailview">
 
