@@ -58,6 +58,14 @@ public class TimeTrackerListAdapter extends BaseAdapter {
             }
         });
 
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                timeTrackingData.removeTimeTracker((TimeTracker)getItem(position));
+                return false;
+            }
+        });
+
         return view;
     }
 

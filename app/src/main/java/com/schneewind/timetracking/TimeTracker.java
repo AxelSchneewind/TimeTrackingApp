@@ -73,7 +73,7 @@ public class TimeTracker {
             _secondsPassed -= 3600;
             hours++;
         }
-        while(time > 60){
+        while(_secondsPassed > 60){
             _secondsPassed -= 60;
             minutes++;
         }
@@ -103,11 +103,6 @@ public class TimeTracker {
         return new TimeTracker(segments[0], Integer.valueOf(segments[1]), Integer.valueOf(segments[2]));
     }
 
-    public TimeTracker(String name){
-        this.name = name;
-        this.time = 0;
-        this.active = false;
-    }
     public TimeTracker(String name, int time, int targetTime){
         this.name = name;
         this.time = time;

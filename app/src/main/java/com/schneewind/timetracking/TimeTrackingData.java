@@ -67,6 +67,16 @@ public class TimeTrackingData {
      */
     public void addTimeTracker(TimeTracker newTracker){
         trackers.add(newTracker);
+        listAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * removes a given TimeTracker from the list
+     * @param tracker the tracker to delete (use getTimeTracker() or findTimeTracker() if necessary)
+     */
+    public void removeTimeTracker(TimeTracker tracker){
+        trackers.remove(tracker);
+        listAdapter.notifyDataSetChanged();
     }
 
     /**

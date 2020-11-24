@@ -35,7 +35,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
+    public int NEWTIMETRACKER_REQUEST_CODE = 100;
+
 
     public TimeTrackingData timeTrackingData;
 
@@ -85,16 +87,20 @@ public class MainActivity extends AppCompatActivity{
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, NewTimeTrackerActivity.class);
-            MainActivity.this.startActivityForResult(intent, 100);
-
-            timeTrackingData.addTimeTracker(new TimeTracker("Tracker " + timeTrackingData.getTrackerCount()));
-
-            timeTrackingData.writeTrackersToDefaultFile();
-
-            Snackbar.make(view, "Added a new TimeTracker", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            Intent intent = new Intent(getApplicationContext(), NewTimeTrackerActivity.class);
+            MainActivity.this.startActivityForResult(intent, NEWTIMETRACKER_REQUEST_CODE);
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == NEWTIMETRACKER_REQUEST_CODE && resultCode == RESULT_OK) {
+            String n = data.getStringExtra("TrackerName"); int init = data.getIntExtra("TrackerInitialValue", 1); int target = data.getIntExtra("TrackerTarget", 4);
+            timeTrackingData.addTimeTracker(new TimeTracker(data.getStringExtra("TrackerName"), data.getIntExtra("TrackerInitialValue",0), data.getIntExtra("TrackerTarget",36000)));
+            timeTrackingData.writeTrackersToDefaultFile();
+        }
     }
 
     @Override

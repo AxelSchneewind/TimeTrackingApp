@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,14 +20,21 @@ public class NewTimeTrackerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String name = ((EditText)findViewById(R.id.tracker_name)).getText().toString();
-                int target = Integer.parseInt(((EditText)findViewById(R.id.tracker_target)).getText().toString());
-                int initial = Integer.parseInt(((EditText)findViewById(R.id.tracker_initial_value)).getText().toString());
+                String _target = ((EditText)findViewById(R.id.tracker_target)).getText().toString();
+                String _initial = ((EditText)findViewById(R.id.tracker_initial_value)).getText().toString();
 
+                if(_target == "") _target = "10";
+                if(_initial == "") _initial = "0";
 
-                TimeTracker tracker = new TimeTracker(name,initial * 3600, target * 3600);
+                int target = Integer.parseInt(_target);
+                int initial = Integer.parseInt(_initial);
 
-                Intent i = new Intent(NewTimeTrackerActivity.this, MainActivity.class);
-                NewTimeTrackerActivity.this.startActivity(i);
+                Intent returnTrackerIntent = new Intent();
+                returnTrackerIntent.putExtra("TrackerName", name);
+                returnTrackerIntent.putExtra("TrackerTarget", target * 3600);
+                returnTrackerIntent.putExtra("TrackerInitialValue", initial * 3600);
+                setResult(RESULT_OK, returnTrackerIntent);
+                finish();
             }
         });
     }
