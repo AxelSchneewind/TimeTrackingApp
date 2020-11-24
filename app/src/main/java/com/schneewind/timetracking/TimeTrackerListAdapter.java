@@ -57,7 +57,7 @@ public class TimeTrackerListAdapter extends BaseAdapter {
         }
 
         ((TextView)view.findViewById(R.id.timetracker_name)).setText(tracker.getName());
-        ((TextView)view.findViewById(R.id.timetracker_time)).setText(tracker.formatTime());
+        ((TextView)view.findViewById(R.id.timetracker_time)).setText(tracker.formatTime(TimeTracker.FormatType.HOUR));
 
         ImageButton activeButton = view.findViewById(R.id.timetracker_active);
         if(tracker.isActive())

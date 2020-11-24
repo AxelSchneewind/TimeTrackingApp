@@ -63,7 +63,7 @@ public class TimeTracker {
     /**
      * @return a formatted string of the stored time (hours minutes seconds)
      */
-    public String formatTime(){
+    public String formatTime(FormatType formatType){
         int _secondsPassed = time;
         int hours  = 0;
         int minutes = 0;
@@ -79,7 +79,18 @@ public class TimeTracker {
         }
         seconds = _secondsPassed;
 
-        String formattedTime = String.format("%dh %dm %ds", hours, minutes, seconds);
+        String formattedTime = "";
+        switch (formatType){
+            case FULL:
+                formattedTime = String.format("%2dh %2dm %2ds", hours, minutes, seconds);
+                break;
+            case HOUR:
+                float time = hours + (float)minutes/60;
+                formattedTime = String.format("%.1fh",time);
+                break;
+        }
+
+
         return formattedTime;
     }
 
@@ -108,5 +119,10 @@ public class TimeTracker {
         this.time = time;
         this.targetTime = targetTime;
         this.active = false;
+    }
+
+    public enum FormatType{
+        HOUR,
+        FULL
     }
 }
