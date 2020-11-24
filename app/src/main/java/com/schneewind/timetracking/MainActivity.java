@@ -34,9 +34,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     public int NEWTIMETRACKER_REQUEST_CODE = 100;
+
+    public long lastActiveTime;
 
 
     public TimeTrackingData timeTrackingData;
@@ -46,16 +51,23 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             super.run();
+
+            if(lastActiveTime != 0) {
+                timeTrackingData.addTimeToAllTrackers(
+                        (int) ((Calendar.getInstance().getTimeInMillis() - lastActiveTime)/1000)
+                );
+                lastActiveTime = 0;
+            }
             while(!isInterrupted()){
                 timeTrackingData.addTimeToAllTrackers(1);
                 runOnUiThread(() -> timeTrackingData.listAdapter.notifyDataSetChanged());
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
+                    lastActiveTime = Calendar.getInstance().getTimeInMillis();
                     e.printStackTrace();
                 }
             }
-            Toast.makeText(getApplicationContext(), "updatethread interrupted, return to application", Toast.LENGTH_LONG).show();
         }
     };
 
@@ -70,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        TimerTick.interrupt();
         timeTrackingData.writeTrackersToDefaultFile();
     }
 
