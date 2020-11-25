@@ -2,6 +2,8 @@ package com.schneewind.timetracking;
 
 import android.content.Context;
 
+import com.schneewind.timetracking.timetracking.TimeTrackingActivity;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +15,7 @@ public class FileHelper {
 
     String defaultFileName = "timetrackingdata.txt";
 
-    MainActivity mainActivity;
+    TimeTrackingActivity timeTrackingActivity;
 
     /**
      * saves a string to the default file
@@ -21,7 +23,7 @@ public class FileHelper {
      */
     public void writeToDefaultFile(String string){
         try {
-            FileOutputStream fileOutputStream = mainActivity.getApplicationContext().openFileOutput(defaultFileName, Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = timeTrackingActivity.getApplicationContext().openFileOutput(defaultFileName, Context.MODE_PRIVATE);
             fileOutputStream.write(string.getBytes());
             fileOutputStream.close();
 
@@ -36,7 +38,7 @@ public class FileHelper {
      * @param string the data to be stored
      */
     public void writeToExternalFile(File path, String fileName, String string){
-        mainActivity.writeBytesToFile(path,fileName, string.getBytes());
+        timeTrackingActivity.writeBytesToFile(path,fileName, string.getBytes());
     }
 
     /**
@@ -46,7 +48,7 @@ public class FileHelper {
     public String readFromDefaultFile(){
         String string = "";
         try {
-            FileInputStream fileInputStream = mainActivity.getApplicationContext().openFileInput(defaultFileName);
+            FileInputStream fileInputStream = timeTrackingActivity.getApplicationContext().openFileInput(defaultFileName);
             BufferedReader  reader = new BufferedReader(new InputStreamReader(fileInputStream));
 
             StringBuffer sb = new StringBuffer();
@@ -63,7 +65,15 @@ public class FileHelper {
         return string;
     }
 
-    public FileHelper(MainActivity mainActivity){
-        this.mainActivity = mainActivity;
+    /**
+     * TODO
+     * @param path
+     * @param fileName
+     * @return
+     */
+    public String readFromExternalFile(File path, String fileName){ return null; }
+
+    public FileHelper(TimeTrackingActivity timeTrackingActivity){
+        this.timeTrackingActivity = timeTrackingActivity;
     }
 }

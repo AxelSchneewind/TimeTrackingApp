@@ -1,4 +1,4 @@
-package com.schneewind.timetracking;
+package com.schneewind.timetracking.timetracking;
 
 public class TimeTracker {
 

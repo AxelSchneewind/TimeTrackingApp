@@ -1,4 +1,4 @@
-package com.schneewind.timetracking;
+package com.schneewind.timetracking.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.schneewind.timetracking.R;
 
 public class DetailViewFragment extends Fragment {
 

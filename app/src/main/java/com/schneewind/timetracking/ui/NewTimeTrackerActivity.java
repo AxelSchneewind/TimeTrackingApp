@@ -1,4 +1,4 @@
-package com.schneewind.timetracking;
+package com.schneewind.timetracking.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,8 @@ import android.os.Parcelable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.schneewind.timetracking.R;
 
 public class NewTimeTrackerActivity extends AppCompatActivity {
 

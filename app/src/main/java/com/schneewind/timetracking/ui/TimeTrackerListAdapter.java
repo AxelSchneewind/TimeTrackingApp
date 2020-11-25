@@ -1,4 +1,4 @@
-package com.schneewind.timetracking;
+package com.schneewind.timetracking.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.schneewind.timetracking.R;
+import com.schneewind.timetracking.timetracking.TimeTracker;
+import com.schneewind.timetracking.timetracking.TimeTrackingData;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class TimeTrackerListAdapter extends BaseAdapter {
     Context context;
@@ -57,7 +59,7 @@ public class TimeTrackerListAdapter extends BaseAdapter {
         }
 
         ((TextView)view.findViewById(R.id.timetracker_name)).setText(tracker.getName());
-        ((TextView)view.findViewById(R.id.timetracker_time)).setText(tracker.formatTime(TimeTracker.FormatType.HOUR));
+        ((TextView)view.findViewById(R.id.timetracker_time)).setText(tracker.formatTime(TimeTracker.FormatType.FULL));
 
         ImageButton activeButton = view.findViewById(R.id.timetracker_active);
         if(tracker.isActive())

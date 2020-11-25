@@ -1,23 +1,33 @@
-package com.schneewind.timetracking;
+package com.schneewind.timetracking.timetracking;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Environment;
+
+import com.schneewind.timetracking.FileHelper;
+import com.schneewind.timetracking.ui.TimeTrackerListAdapter;
 
 import java.util.ArrayList;
 
 public class TimeTrackingData {
-    MainActivity mainActivity;
+    TimeTrackingActivity timeTrackingActivity;
 
     ArrayList<TimeTracker> trackers = new ArrayList<>();
 
     public TimeTrackerListAdapter listAdapter;
 
+    public TimeTrackingData() {}
+    public TimeTrackingData(TimeTrackingActivity timeTrackingActivity){
+        this.timeTrackingActivity = timeTrackingActivity;
+    }
+
+
     /**
      * reads Trackers from the default file and stores them in this TimeTrackingData object
      */
     public void readTrackersFromDefaultFile(){
-        FileHelper fileHelper = new FileHelper(mainActivity);
+        if (timeTrackingActivity== null) return;
+        trackers.clear();
+
+        FileHelper fileHelper = new FileHelper(timeTrackingActivity);
         String data = fileHelper.readFromDefaultFile();
         String[] trackerStrings = data.split("\n");
 
@@ -30,11 +40,13 @@ public class TimeTrackingData {
      * saves the Trackers from this TimeTrackingData object to the default file
      */
     public void writeTrackersToDefaultFile(){
+        if(timeTrackingActivity == null) return;
+
         String data = new String();
         for (TimeTracker tracker : trackers) {
             data = data.concat(tracker.toSaveableString() + "\n");
         }
-        FileHelper fileHelper = new FileHelper(mainActivity);
+        FileHelper fileHelper = new FileHelper(timeTrackingActivity);
         fileHelper.writeToDefaultFile(data);
     }
 
@@ -42,12 +54,13 @@ public class TimeTrackingData {
      * creates FileHelper and uses its export function
      */
     public void exportTrackers(){
+        if(timeTrackingActivity == null) return;
         String data = new String();
         for (TimeTracker tracker : trackers) {
             data = data.concat(tracker.toSaveableString() + "\n");
         }
 
-        FileHelper fileHelper = new FileHelper(mainActivity);
+        FileHelper fileHelper = new FileHelper(timeTrackingActivity);
         fileHelper.writeToExternalFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "export.txt", data);
     }
 
@@ -55,7 +68,7 @@ public class TimeTrackingData {
      * adds a given amount of time to all active trackers
      * @param time time in seconds
      */
-    public void addTimeToAllTrackers(int time){
+    public void addTimeToAllActiveTrackers(int time){
         for (TimeTracker tracker : trackers) {
             if(tracker.isActive()) tracker.addTime(time);
         }
@@ -89,20 +102,38 @@ public class TimeTrackingData {
     }
 
     /**
-     * finds the timetracker of a given name
+     * finds and returns the timetracker of a given name
      * @param name the name of the tracker
      * @return the TimeTracker with the given name, returns null if no such tracker exists
      */
     public TimeTracker findTimeTracker(String name){
         for (TimeTracker tracker : trackers) {
-            if(tracker.getName() == name) return tracker;
+            if(tracker.getName().equals(name)) return tracker;
         }
         return null;
     }
 
-    public int getTrackerCount(){ return trackers.size(); }
+    /**
+     * returns the number of trackers that are stored
+     * @return an integer
+     */
+    public int getTrackerCount(){
+        return trackers.size();
+    }
 
-    public TimeTrackingData(MainActivity mainActivity){
-        this.mainActivity = mainActivity;
+    /**
+     * returns the number of trackers that are active
+     * @return an integer
+     */
+    public int getActiveTrackerCount(){
+        int count = 0;
+        for (TimeTracker tracker : trackers) {
+            if(tracker.isActive()) count++;
+        }
+        return count;
+    }
+
+    public void setTimeTrackingActivity(TimeTrackingActivity timeTrackingActivity){
+        this.timeTrackingActivity = timeTrackingActivity;
     }
 }
