@@ -18,6 +18,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * @author Axel Schneewind
+ *
+ * An activity class that has functionality like FileIO and TimerTick calls
+ */
 public class TimeTrackingActivity  extends AppCompatActivity {
 
     @Override
@@ -31,14 +36,15 @@ public class TimeTrackingActivity  extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if(!TimerTick.isAlive() || TimerTick.isInterrupted()) TimerTick.start();
+        getTimeTrackingData().readSessionData();
+        if(TimerTick.isInterrupted() || !TimerTick.isAlive()) TimerTick.start();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        getTimeTrackingData().saveSessionData();
         TimerTick.interrupt();
-        getTimeTrackingData().writeTrackersToDefaultFile();
     }
 
     public Thread TimerTick = new Thread(){
@@ -46,7 +52,12 @@ public class TimeTrackingActivity  extends AppCompatActivity {
         public void run() {
             super.run();
             while(!isInterrupted()){
-                onTimerTick();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onTimerTick();
+                    }
+                });
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

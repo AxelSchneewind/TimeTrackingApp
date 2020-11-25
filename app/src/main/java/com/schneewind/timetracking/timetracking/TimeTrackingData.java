@@ -6,7 +6,13 @@ import com.schneewind.timetracking.FileHelper;
 import com.schneewind.timetracking.ui.TimeTrackerListAdapter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
+/**
+ * @author Axel Schneewind
+ * a class for storing the instances of the TimeTrackers during runtime.
+ * conatains methods for reading/writing TimeTrackers to files by using the FileHelper methods
+ */
 public class TimeTrackingData {
     TimeTrackingActivity timeTrackingActivity;
 
@@ -15,20 +21,17 @@ public class TimeTrackingData {
     public TimeTrackerListAdapter listAdapter;
 
     public TimeTrackingData() {}
-    public TimeTrackingData(TimeTrackingActivity timeTrackingActivity){
-        this.timeTrackingActivity = timeTrackingActivity;
-    }
-
 
     /**
      * reads Trackers from the default file and stores them in this TimeTrackingData object
+     * requires timeTrackingActivity of this TimeTrackingData instance to be assigned
      */
     public void readTrackersFromDefaultFile(){
         if (timeTrackingActivity== null) return;
         trackers.clear();
 
         FileHelper fileHelper = new FileHelper(timeTrackingActivity);
-        String data = fileHelper.readFromDefaultFile();
+        String data = fileHelper.readFromDefaultFile(FileHelper.dataFile);
         String[] trackerStrings = data.split("\n");
 
         for (String trackerString : trackerStrings) {
@@ -38,6 +41,7 @@ public class TimeTrackingData {
 
     /**
      * saves the Trackers from this TimeTrackingData object to the default file
+     * requires timeTrackingActivity of this TimeTrackingData instance to be assigned
      */
     public void writeTrackersToDefaultFile(){
         if(timeTrackingActivity == null) return;
@@ -47,11 +51,12 @@ public class TimeTrackingData {
             data = data.concat(tracker.toSaveableString() + "\n");
         }
         FileHelper fileHelper = new FileHelper(timeTrackingActivity);
-        fileHelper.writeToDefaultFile(data);
+        fileHelper.writeToDefaultFile(FileHelper.dataFile, data);
     }
 
     /**
-     * creates FileHelper and uses its export function
+     * creates FileHelper and uses its export function.
+     * requires timeTrackingActivity of this TimeTrackingData instance to be assigned
      */
     public void exportTrackers(){
         if(timeTrackingActivity == null) return;
@@ -65,12 +70,63 @@ public class TimeTrackingData {
     }
 
     /**
+     * Generating a file that stores data of the current session containing: current time, active TimeTrackers
+     * requires timeTrackingActivity of this TimeTrackingData instance to be assigned
+     */
+    public void saveSessionData(){
+        if(timeTrackingActivity == null) return;
+
+        String data = new String();
+        data = data.concat(String.valueOf(Calendar.getInstance().getTimeInMillis()) + "\n");
+
+        for (int i = 0; i < trackers.size(); i++) {
+            TimeTracker tracker = trackers.get(i);
+            if (tracker.isActive()) data = data.concat(i + ";");
+        }
+        FileHelper fileHelper = new FileHelper(timeTrackingActivity);
+        fileHelper.writeToDefaultFile(FileHelper.sessionFile, data);
+    }
+
+    /**
+     * reads a given String containing session data and applies it to the stored TimeTrackers (active status, last time of activity)
+     * requires the timeTrackingActivity of this TimeTrackingData instance to be assigned
+     * needs to be called after calling readTrackersFromDefaultFile()
+     */
+    public void readSessionData(){
+        FileHelper fileHelper = new FileHelper(timeTrackingActivity);
+        String data = fileHelper.readFromDefaultFile(FileHelper.sessionFile);
+
+        if(!data.contains("\n") || !data.contains(";")) return;
+
+        String[] segments = data.split("\n");
+
+        String[] activeTrackerIndices = segments[1].split(";");
+        setAllTimeTrackersActive(false);
+        for (String activeTrackerIndex : activeTrackerIndices) {
+            getTimeTracker(Integer.parseInt(activeTrackerIndex)).setActive(true);
+        }
+
+        long timeDelta = (Calendar.getInstance().getTimeInMillis() - Long.parseLong(segments[0])) / 1000;
+        addTimeToAllActiveTrackers((int) timeDelta);
+    }
+
+    /**
      * adds a given amount of time to all active trackers
      * @param time time in seconds
      */
     public void addTimeToAllActiveTrackers(int time){
         for (TimeTracker tracker : trackers) {
             if(tracker.isActive()) tracker.addTime(time);
+        }
+    }
+
+    /**
+     * Activates/Deactivates all stored TimeTrackers
+     * @param active whether all TimeTrackers should be active or not
+     */
+    public void setAllTimeTrackersActive(boolean active){
+        for (TimeTracker tracker : trackers) {
+            tracker.setActive(active);
         }
     }
 
@@ -99,6 +155,18 @@ public class TimeTrackingData {
      */
     public TimeTracker getTimeTracker(int index){
         return trackers.get(index);
+    }
+
+    /**
+     * searches the stored TimeTrackers and returns the index of the given TimeTracker
+     * @param timeTracker the timeTracker to search for
+     * @return the index of the TimeTracker as an int
+     */
+    public int getTimeTrackerIndex(TimeTracker timeTracker){
+        for (int i = 0; i < trackers.size(); i++) {
+            if(timeTracker.equals(trackers.get(i))) return i;
+        }
+        return -1;
     }
 
     /**

@@ -1,5 +1,10 @@
 package com.schneewind.timetracking.timetracking;
 
+
+/**
+ * @author Axel Schneewind
+ * A class for storing information of a TimeTracker
+ */
 public class TimeTracker {
 
     private String name;
@@ -22,7 +27,6 @@ public class TimeTracker {
      * @return
      */
     public int getTargetTime(){ return targetTime; }
-
 
     /**
      * checks whether this tracker is active

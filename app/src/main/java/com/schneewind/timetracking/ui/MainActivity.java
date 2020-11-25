@@ -24,6 +24,7 @@ public class MainActivity extends TimeTrackingActivity {
     public int NEWTIMETRACKER_REQUEST_CODE = 100;
     public String NOTIFICATION_CHANNEL_ID = "123";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,13 +46,12 @@ public class MainActivity extends TimeTrackingActivity {
     @Override
     protected void onTimerTick() {
         super.onTimerTick();
-        if(getTimeTrackingData().listAdapter != null) runOnUiThread(() -> getTimeTrackingData().listAdapter.notifyDataSetChanged());
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        getTimeTrackingData().writeTrackersToDefaultFile();
+        getTimeTrackingData().addTimeToAllActiveTrackers(1);
+        if(getTimeTrackingData().listAdapter != null) {
+            getTimeTrackingData().listAdapter.notifyDataSetChanged();
+        }
+
     }
 
     @Override

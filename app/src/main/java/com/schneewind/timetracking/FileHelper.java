@@ -10,10 +10,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
+/**
+ * @author Axel Schneewind
+ * A class for creating file from String data and vice versa
+ */
 public class FileHelper {
-
-    String defaultFileName = "timetrackingdata.txt";
+    public static String dataFile = "timetracking.txt", sessionFile = "session.data";
 
     TimeTrackingActivity timeTrackingActivity;
 
@@ -21,9 +25,9 @@ public class FileHelper {
      * saves a string to the default file
      * @param string string to be saved
      */
-    public void writeToDefaultFile(String string){
+    public void writeToDefaultFile(String dataFile,String string){
         try {
-            FileOutputStream fileOutputStream = timeTrackingActivity.getApplicationContext().openFileOutput(defaultFileName, Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = timeTrackingActivity.getApplicationContext().openFileOutput(dataFile, Context.MODE_PRIVATE);
             fileOutputStream.write(string.getBytes());
             fileOutputStream.close();
 
@@ -45,10 +49,10 @@ public class FileHelper {
      * reads a string from the default file
      * @return the string from the file
      */
-    public String readFromDefaultFile(){
+    public String readFromDefaultFile(String dataFile){
         String string = "";
         try {
-            FileInputStream fileInputStream = timeTrackingActivity.getApplicationContext().openFileInput(defaultFileName);
+            FileInputStream fileInputStream = timeTrackingActivity.getApplicationContext().openFileInput(dataFile);
             BufferedReader  reader = new BufferedReader(new InputStreamReader(fileInputStream));
 
             StringBuffer sb = new StringBuffer();
@@ -66,12 +70,16 @@ public class FileHelper {
     }
 
     /**
-     * TODO
+     * calls the readBytesOfFile method of the TimeTrackingActivity and returns it as a string
      * @param path
      * @param fileName
-     * @return
+     * @return the string generated from the bytes via standard encoding
      */
-    public String readFromExternalFile(File path, String fileName){ return null; }
+    public String readFromExternalFile(File path, String fileName){
+        byte[] bytes = timeTrackingActivity.readBytesOfFile(path,fileName);
+        String string = new String(bytes);
+        return string;
+    }
 
     public FileHelper(TimeTrackingActivity timeTrackingActivity){
         this.timeTrackingActivity = timeTrackingActivity;
