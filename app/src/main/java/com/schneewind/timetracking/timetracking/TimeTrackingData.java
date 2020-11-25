@@ -27,7 +27,7 @@ public class TimeTrackingData {
      * requires timeTrackingActivity of this TimeTrackingData instance to be assigned
      */
     public void readTrackersFromDefaultFile(){
-        if (timeTrackingActivity== null) return;
+        if (timeTrackingActivity == null) return;
         trackers.clear();
 
         FileHelper fileHelper = new FileHelper(timeTrackingActivity);
@@ -35,7 +35,7 @@ public class TimeTrackingData {
         String[] trackerStrings = data.split("\n");
 
         for (String trackerString : trackerStrings) {
-            if(trackerString != "") trackers.add(TimeTracker.fromSavedString(trackerString));
+            if(!trackerString.equals("")) trackers.add(TimeTracker.fromSavedString(trackerString));
         }
     }
 
@@ -46,7 +46,7 @@ public class TimeTrackingData {
     public void writeTrackersToDefaultFile(){
         if(timeTrackingActivity == null) return;
 
-        String data = new String();
+        String data = "";
         for (TimeTracker tracker : trackers) {
             data = data.concat(tracker.toSaveableString() + "\n");
         }
@@ -60,7 +60,7 @@ public class TimeTrackingData {
      */
     public void exportTrackers(){
         if(timeTrackingActivity == null) return;
-        String data = new String();
+        String data = "";
         for (TimeTracker tracker : trackers) {
             data = data.concat(tracker.toSaveableString() + "\n");
         }
@@ -70,14 +70,14 @@ public class TimeTrackingData {
     }
 
     /**
-     * Generating a file that stores data of the current session containing: current time, active TimeTrackers
+     * Generating a file that stores data of the current session containing: current time, active TimeTrackers.
      * requires timeTrackingActivity of this TimeTrackingData instance to be assigned
      */
     public void saveSessionData(){
         if(timeTrackingActivity == null) return;
 
-        String data = new String();
-        data = data.concat(String.valueOf(Calendar.getInstance().getTimeInMillis()) + "\n");
+        String data = "";
+        data = data.concat(Calendar.getInstance().getTimeInMillis() + "\n");
 
         for (int i = 0; i < trackers.size(); i++) {
             TimeTracker tracker = trackers.get(i);
@@ -88,9 +88,9 @@ public class TimeTrackingData {
     }
 
     /**
-     * reads a given String containing session data and applies it to the stored TimeTrackers (active status, last time of activity)
-     * requires the timeTrackingActivity of this TimeTrackingData instance to be assigned
-     * needs to be called after calling readTrackersFromDefaultFile()
+     * reads a given String containing session data and applies it to the stored TimeTrackers (active status, last time of activity).
+     * requires the timeTrackingActivity of this TimeTrackingData instance to be assigned.
+     * needs to be called after calling readTrackersFromDefaultFile().
      */
     public void readSessionData(){
         FileHelper fileHelper = new FileHelper(timeTrackingActivity);
@@ -108,6 +108,19 @@ public class TimeTrackingData {
 
         long timeDelta = (Calendar.getInstance().getTimeInMillis() - Long.parseLong(segments[0])) / 1000;
         addTimeToAllActiveTrackers((int) timeDelta);
+
+        clearSessionData();
+    }
+
+    /**
+     * clears the sessionData file, needs to be called after reading the data of the sessionData file to prevent repeatedly applying it.
+     * requires the timeTrackingActivity of this TimeTrackingData instance to be assigned
+     */
+    public void clearSessionData(){
+        if(timeTrackingActivity == null) return;
+        FileHelper fileHelper = new FileHelper(timeTrackingActivity);
+        String data = "";
+        fileHelper.writeToDefaultFile(FileHelper.sessionFile, data);
     }
 
     /**
@@ -201,6 +214,11 @@ public class TimeTrackingData {
         return count;
     }
 
+    /**
+     * sets the given TimeTrackingActivity as this TimeTrackingDatas timeTrackingActivity.
+     * !needs to be called at least once before any files can be written/read!
+     * @param timeTrackingActivity any activity of the timeTrackingActivity type. Typically the MainActivity
+     */
     public void setTimeTrackingActivity(TimeTrackingActivity timeTrackingActivity){
         this.timeTrackingActivity = timeTrackingActivity;
     }

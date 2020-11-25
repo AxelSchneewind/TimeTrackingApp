@@ -28,6 +28,7 @@ public class TimeTrackingActivity  extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getTimeTrackingData().setTimeTrackingActivity(this);
         getTimeTrackingData().readTrackersFromDefaultFile();
     }
@@ -45,6 +46,13 @@ public class TimeTrackingActivity  extends AppCompatActivity {
         super.onPause();
         getTimeTrackingData().saveSessionData();
         TimerTick.interrupt();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        getTimeTrackingData().saveSessionData();
+        getTimeTrackingData().writeTrackersToDefaultFile();
     }
 
     public Thread TimerTick = new Thread(){
@@ -121,7 +129,7 @@ public class TimeTrackingActivity  extends AppCompatActivity {
             StringBuffer sb = new StringBuffer();
             String line = reader.readLine();
             while (line != null) {
-                sb.append(line + "\n");
+                sb.append(line).append("\n");
                 line = reader.readLine();
             }
             string = sb.toString();

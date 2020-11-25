@@ -115,7 +115,7 @@ public class TimeTracker {
     public static TimeTracker fromSavedString(String savedString){
         String[] segments = savedString.split(";");
 
-        return new TimeTracker(segments[0], Integer.valueOf(segments[1]), Integer.valueOf(segments[2]));
+        return new TimeTracker(segments[0], Integer.parseInt(segments[1]), Integer.parseInt(segments[2]));
     }
 
     public TimeTracker(String name, int time, int targetTime){

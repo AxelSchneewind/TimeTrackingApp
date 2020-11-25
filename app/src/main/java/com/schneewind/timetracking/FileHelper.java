@@ -10,7 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Axel Schneewind
@@ -30,7 +29,6 @@ public class FileHelper {
             FileOutputStream fileOutputStream = timeTrackingActivity.getApplicationContext().openFileOutput(dataFile, Context.MODE_PRIVATE);
             fileOutputStream.write(string.getBytes());
             fileOutputStream.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,6 +60,7 @@ public class FileHelper {
                 line = reader.readLine();
             }
             string = sb.toString();
+            fileInputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
