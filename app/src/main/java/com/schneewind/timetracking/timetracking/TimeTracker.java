@@ -7,7 +7,7 @@ package com.schneewind.timetracking.timetracking;
  */
 public class TimeTracker {
 
-    private String name;
+    private final String name;
     private int time;
     private int targetTime;
 
@@ -73,20 +73,21 @@ public class TimeTracker {
         int minutes = 0;
         int seconds = 0;
 
-        while(_secondsPassed > 3600){
+        while(_secondsPassed >= 3600){
             _secondsPassed -= 3600;
             hours++;
         }
-        while(_secondsPassed > 60){
+        while(_secondsPassed >= 60){
             _secondsPassed -= 60;
             minutes++;
         }
         seconds = _secondsPassed;
 
         String formattedTime = "";
+        /* for string formatting, see https://www.baeldung.com/java-number-formatting */
         switch (formatType){
             case FULL:
-                formattedTime = String.format("%2dh %2dm %2ds", hours, minutes, seconds);
+                formattedTime = String.format("%0" + 2 + "d" + "h %0" + 2 + "d" + "m %0" + 2 + "d" +"s", hours, minutes, seconds);
                 break;
             case HOUR:
                 float time = hours + (float)minutes/60;

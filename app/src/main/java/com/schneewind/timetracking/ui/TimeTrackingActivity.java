@@ -1,4 +1,4 @@
-package com.schneewind.timetracking.timetracking;
+package com.schneewind.timetracking.ui;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.schneewind.timetracking.TimeTrackingApp;
+import com.schneewind.timetracking.timetracking.TimeTrackingData;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,6 +32,8 @@ public class TimeTrackingActivity  extends AppCompatActivity {
 
         getTimeTrackingData().setTimeTrackingActivity(this);
         getTimeTrackingData().readTrackersFromDefaultFile();
+
+        TimerTick.start();
     }
 
     @Override
@@ -38,7 +41,7 @@ public class TimeTrackingActivity  extends AppCompatActivity {
         super.onResume();
 
         getTimeTrackingData().readSessionData();
-        if(TimerTick.isInterrupted() || !TimerTick.isAlive()) TimerTick.start();
+        boolean b = TimerTick.isAlive(); boolean a = TimerTick.isInterrupted();
     }
 
     @Override
@@ -67,7 +70,7 @@ public class TimeTrackingActivity  extends AppCompatActivity {
                     }
                 });
                 try {
-                    Thread.sleep(1000);
+                    sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -126,7 +129,7 @@ public class TimeTrackingActivity  extends AppCompatActivity {
             FileInputStream fileInputStream = new FileInputStream(new File(path, filename));
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
 
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             String line = reader.readLine();
             while (line != null) {
                 sb.append(line).append("\n");

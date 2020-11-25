@@ -16,7 +16,7 @@
         android:theme="@style/Theme.TimeTracking">
         <activity
             android:name=".ui.NewTimeTrackerActivity"
-            android:theme="@style/Theme.AppCompat.Transparent"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
             android:label="@string/newtracker_label" />
         <activity
             android:name=".ui.MainActivity"

@@ -2,7 +2,7 @@ package com.schneewind.timetracking;
 
 import android.content.Context;
 
-import com.schneewind.timetracking.timetracking.TimeTrackingActivity;
+import com.schneewind.timetracking.ui.TimeTrackingActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
  * A class for creating file from String data and vice versa
  */
 public class FileHelper {
-    public static String dataFile = "timetracking.txt", sessionFile = "session.data";
+    public static String dataFile = "timetracking.txt", sessionFile = "session.data", exportFile = "export.txt";
 
     TimeTrackingActivity timeTrackingActivity;
 

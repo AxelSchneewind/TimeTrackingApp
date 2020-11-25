@@ -6,28 +6,40 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@android:color/darker_gray"
-    android:padding="16dp"
+    android:padding="24dp"
     tools:context=".ui.NewTimeTrackerActivity">
+
+    <TextView
+        android:id="@+id/new_timetracker_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/newtracker_label"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/tracker_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/newtracker_name"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/new_timetracker_title" />
 
     <EditText
         android:id="@+id/tracker_target"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/newtracker_target"
+        android:importantForAutofill="no"
         android:inputType="number|numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,6 +52,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/newtracker_initialvalue"
+        android:importantForAutofill="no"
         android:inputType="number|numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

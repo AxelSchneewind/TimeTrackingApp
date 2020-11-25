@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.schneewind.timetracking.R;
-import com.schneewind.timetracking.timetracking.TimeTrackingActivity;
 import com.schneewind.timetracking.timetracking.TimeTrackingData;
 
 public class ListViewFragment extends Fragment {

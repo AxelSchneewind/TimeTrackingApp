@@ -46,6 +46,38 @@ public class TimeTrackerListAdapter extends BaseAdapter {
         View view;
         if(listElementViews.size() <= position){
             view = layoutInflater.inflate(R.layout.timetracker_list_element, null);
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    timeTrackingData.removeTimeTracker((TimeTracker)getItem(position));
+                    return false;
+                }
+            });
+
+            ImageButton activeButton = view.findViewById(R.id.timetracker_active);
+            if(tracker.isActive()) {
+                activeButton.setImageResource(R.drawable.ic_pause_button);
+            }else{
+                activeButton.setImageResource(R.drawable.ic_play_button);
+            }
+            activeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((TimeTracker)getItem(position)).setActive();
+
+                    if(tracker.isActive())
+                        activeButton.setImageResource(R.drawable.ic_pause_button);
+                    else
+                        activeButton.setImageResource(R.drawable.ic_play_button);
+                }
+            });
+
+            if(tracker.getTargetTime() == 0) {
+                view.findViewById(R.id.timetracker_progress).setVisibility(View.GONE);
+            }
+
+            ((TextView)view.findViewById(R.id.timetracker_name)).setText(tracker.getName());
+
             listElementViews.add(view);
         }else{
             view = listElementViews.get(position);
@@ -54,38 +86,9 @@ public class TimeTrackerListAdapter extends BaseAdapter {
         if(tracker.getTargetTime() != 0) {
             int progress = ((ProgressBar)view.findViewById(R.id.timetracker_progress)).getMax() * tracker.getTime() / tracker.getTargetTime();
             ((ProgressBar)view.findViewById(R.id.timetracker_progress)).setProgress(progress);
-        } else{
-            view.findViewById(R.id.timetracker_progress).setVisibility(View.GONE);
         }
 
-        ((TextView)view.findViewById(R.id.timetracker_name)).setText(tracker.getName());
         ((TextView)view.findViewById(R.id.timetracker_time)).setText(tracker.formatTime(TimeTracker.FormatType.FULL));
-
-        ImageButton activeButton = view.findViewById(R.id.timetracker_active);
-        if(tracker.isActive())
-            activeButton.setImageResource(R.drawable.ic_pause_button);
-        else
-            activeButton.setImageResource(R.drawable.ic_play_button);
-
-        activeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((TimeTracker)getItem(position)).setActive();
-
-                if(tracker.isActive())
-                    activeButton.setImageResource(R.drawable.ic_pause_button);
-                else
-                    activeButton.setImageResource(R.drawable.ic_play_button);
-            }
-        });
-
-        view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                timeTrackingData.removeTimeTracker((TimeTracker)getItem(position));
-                return false;
-            }
-        });
 
         return view;
     }

@@ -4,6 +4,7 @@ import android.os.Environment;
 
 import com.schneewind.timetracking.FileHelper;
 import com.schneewind.timetracking.ui.TimeTrackerListAdapter;
+import com.schneewind.timetracking.ui.TimeTrackingActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,7 +67,21 @@ public class TimeTrackingData {
         }
 
         FileHelper fileHelper = new FileHelper(timeTrackingActivity);
-        fileHelper.writeToExternalFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "export.txt", data);
+        fileHelper.writeToExternalFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FileHelper.exportFile, data);
+    }
+
+    /**
+     * creates FileHelper and uses its import function. require timeTrackingActivity of thie TimeTrackingData instance to be assigned
+     * TODO: implement file picker to choose the file to import
+     */
+    public void importTrackers(){
+        FileHelper fileHelper = new FileHelper(timeTrackingActivity);
+        String data = fileHelper.readFromExternalFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FileHelper.exportFile);
+        String[] trackerStrings = data.split("\n");
+
+        for (String trackerString : trackerStrings) {
+            if(!trackerString.equals("")) trackers.add(TimeTracker.fromSavedString(trackerString));
+        }
     }
 
     /**

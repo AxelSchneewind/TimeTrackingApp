@@ -6,23 +6,24 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.schneewind.timetracking.R;
-import com.schneewind.timetracking.timetracking.TimeTracker;
-import com.schneewind.timetracking.timetracking.TimeTrackingActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Switch;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import android.view.Menu;
-import android.view.MenuItem;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.schneewind.timetracking.R;
+import com.schneewind.timetracking.timetracking.TimeTracker;
 
 public class MainActivity extends TimeTrackingActivity {
     public int NEWTIMETRACKER_REQUEST_CODE = 100;
     public String NOTIFICATION_CHANNEL_ID = "123";
+    public int NOTIFICATION_ID = 155;
 
 
     @Override
@@ -32,15 +33,38 @@ public class MainActivity extends TimeTrackingActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO: make switch setAllTimeTrackersActive
+                if(view.getId() == R.id.app_bar_switch_button)
+                    getTimeTrackingData().setAllTimeTrackersActive(((Switch)view).isChecked());
+            }
+        });
 
         createNotificationChannel();
-        launchNotification();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), NewTimeTrackerActivity.class);
             MainActivity.this.startActivityForResult(intent, NEWTIMETRACKER_REQUEST_CODE);
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        removeNotification();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        int activeTrackers = getTimeTrackingData().getActiveTrackerCount();
+        if(activeTrackers != 0){
+            String content = String.format("%d " + (activeTrackers > 1 ? getString(R.string.notification_content_plural) : getString(R.string.notification_content_singular)), activeTrackers);
+            launchNotification(content);
+        }
     }
 
     @Override
@@ -59,7 +83,7 @@ public class MainActivity extends TimeTrackingActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == NEWTIMETRACKER_REQUEST_CODE && resultCode == RESULT_OK) {
-            getTimeTrackingData().addTimeTracker(new TimeTracker(data.getStringExtra("TrackerName"), data.getIntExtra("TrackerInitialValue",0), data.getIntExtra("TrackerTarget",36000)));
+            getTimeTrackingData().addTimeTracker(new TimeTracker(data.getStringExtra("TrackerName"), data.getIntExtra("TrackerInitialValue",0), data.getIntExtra("TrackerTarget",0)));
             getTimeTrackingData().writeTrackersToDefaultFile();
         }
     }
@@ -88,25 +112,54 @@ public class MainActivity extends TimeTrackingActivity {
             return true;
         }
 
+        if (id == R.id.action_import){
+            getTimeTrackingData().importTrackers();
+            return true;
+        }
+
+        if(id == R.id.app_bar_switch_button){
+            getTimeTrackingData().setAllTimeTrackersActive(((Switch)findViewById(R.id.app_bar_switch)).isChecked());
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
-    private void launchNotification(){
+
+
+
+
+    /**
+     * launches the notification for the app
+     */
+    private void launchNotification(String content){
         Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("TimeTracker")
+                .setContentTitle(getApplication().getString(R.string.app_name))
                 .setContentIntent(pendingIntent)
+                .setContentText(content)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MainActivity.this);
-        notificationManager.notify(0, builder.build());
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 
+    /**
+     * removes a created notification for the app
+     */
+    private void removeNotification(){
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MainActivity.this);
+        notificationManager.cancel(NOTIFICATION_ID);
+    }
+
+    /**
+     * creates the Notification of the app, has to be called on creation
+     */
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "TimeTracking NotificationChannel";
