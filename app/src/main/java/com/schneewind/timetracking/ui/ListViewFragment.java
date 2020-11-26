@@ -43,7 +43,6 @@ public class ListViewFragment extends Fragment implements AdapterView.OnItemLong
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         timeTrackingData.removeTimeTracker(timeTrackingData.getTimeTracker(i));
         timeTrackingData.listAdapter.notifyDataSetChanged();
-
         return false;
     }
 
@@ -56,6 +55,8 @@ public class ListViewFragment extends Fragment implements AdapterView.OnItemLong
      */
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        getActivity().setContentView(R.layout.fragment_detailview);
+        getActivity().findViewById(R.id.fragment_secondary).setVisibility(View.VISIBLE);
+        DetailViewFragment detailViewFragment = (DetailViewFragment) getActivity().getSupportFragmentManager().findFragmentByTag("DETAILVIEW");
+        detailViewFragment.setDisplayedTimeTracker(timeTrackingData.getTimeTracker(i));
     }
 }

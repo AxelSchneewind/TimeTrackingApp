@@ -65,9 +65,12 @@ public class TimeTracker {
 
 
     /**
-     * @return a formatted string of the stored time (hours minutes seconds)
+     * Formats the given time and returns a String
+     * @param formatType the FormatType determining what the String should look like
+     * @param time the time in seconds to format
+     * @return a formatted String
      */
-    public String formatTime(FormatType formatType){
+    public static String formatTime(FormatType formatType, int time){
         int _secondsPassed = time;
         int hours  = 0;
         int minutes = 0;
@@ -90,13 +93,29 @@ public class TimeTracker {
                 formattedTime = String.format("%0" + 2 + "d" + "h %0" + 2 + "d" + "m %0" + 2 + "d" +"s", hours, minutes, seconds);
                 break;
             case HOUR:
-                float time = hours + (float)minutes/60;
-                formattedTime = String.format("%.1fh",time);
+                float timeShort = hours + (float)minutes/60;
+                formattedTime = String.format("%.1fh",timeShort);
                 break;
         }
-
-
         return formattedTime;
+    }
+
+    /**
+     * formats the time stored in this TimeTracker
+     * @param formatType the FormatType determining what the String should look like
+     * @return a formatted String
+     */
+    public String formatTime(FormatType formatType){
+        return formatTime(formatType, time);
+    }
+
+    /**
+     * Formats the target time stored in this TimeTracker
+     * @param formatType the FormatType determining what the String should look like
+     * @return a formatted String
+     */
+    public String formatTargetTime(FormatType formatType) {
+        return formatTime(formatType, targetTime);
     }
 
     /**
@@ -125,6 +144,8 @@ public class TimeTracker {
         this.targetTime = targetTime;
         this.active = false;
     }
+
+
 
     public enum FormatType{
         HOUR,

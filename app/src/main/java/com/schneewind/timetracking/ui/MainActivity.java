@@ -42,6 +42,15 @@ public class MainActivity extends TimeTrackingActivity {
             }
         });
 
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_secondary,new DetailViewFragment(), "DETAILVIEW").commit();
+
+        findViewById(R.id.content_main).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                findViewById(R.id.fragment_secondary).setVisibility(View.GONE);
+            }
+        });
+
         createNotificationChannel();
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -124,8 +133,6 @@ public class MainActivity extends TimeTrackingActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
 
 
