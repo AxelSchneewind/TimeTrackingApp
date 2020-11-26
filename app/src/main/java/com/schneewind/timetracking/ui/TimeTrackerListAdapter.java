@@ -45,14 +45,8 @@ public class TimeTrackerListAdapter extends BaseAdapter {
 
         View view;
         if(listElementViews.size() <= position){
+            //Initialize the view
             view = layoutInflater.inflate(R.layout.timetracker_list_element, null);
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    timeTrackingData.removeTimeTracker((TimeTracker)getItem(position));
-                    return false;
-                }
-            });
 
             ImageButton activeButton = view.findViewById(R.id.timetracker_active);
             if(tracker.isActive()) {

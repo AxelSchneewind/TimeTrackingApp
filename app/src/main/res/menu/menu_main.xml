@@ -16,6 +16,7 @@
     <item
         android:id="@+id/app_bar_switch"
         android:title="ON/OFF"
-        app:actionLayout="@layout/switch_item"
+        app:actionLayout="@menu/switch_item"
         app:showAsAction="always" />
+
 </menu>
