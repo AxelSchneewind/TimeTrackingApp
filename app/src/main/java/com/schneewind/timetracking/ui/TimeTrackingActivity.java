@@ -26,6 +26,8 @@ import java.io.InputStreamReader;
  */
 public class TimeTrackingActivity  extends AppCompatActivity {
 
+    final String timerTickThreadName = "TIMETRACKING_TIMERTICK";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +35,10 @@ public class TimeTrackingActivity  extends AppCompatActivity {
         getTimeTrackingData().setTimeTrackingActivity(this);
         getTimeTrackingData().readTrackersFromDefaultFile();
 
-        TimerTick.start();
+        if(getThreadByName(timerTickThreadName) == null){
+            timerTickThread.setName(timerTickThreadName);
+            timerTickThread.start();
+        }
     }
 
     @Override
@@ -41,24 +46,24 @@ public class TimeTrackingActivity  extends AppCompatActivity {
         super.onResume();
 
         getTimeTrackingData().readSessionData();
-        boolean b = TimerTick.isAlive(); boolean a = TimerTick.isInterrupted();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         getTimeTrackingData().saveSessionData();
-        TimerTick.interrupt();
+        timerTickThread.interrupt();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        timerTickThread.interrupt();
         getTimeTrackingData().saveSessionData();
         getTimeTrackingData().writeTrackersToDefaultFile();
     }
 
-    public Thread TimerTick = new Thread(){
+    public Thread timerTickThread = new Thread(){
         @Override
         public void run() {
             super.run();
@@ -77,6 +82,18 @@ public class TimeTrackingActivity  extends AppCompatActivity {
             }
         }
     };
+
+    /**
+     * A method returning the thread of the specified name
+     * @param threadName a string containing the name of the searched thread
+     * @return the thread of the given name, or null if there is none
+     */
+    public Thread getThreadByName(String threadName) {
+        for (Thread t : Thread.getAllStackTraces().keySet()) {
+            if (t.getName().equals(threadName)) return t;
+        }
+        return null;
+    }
 
     protected void onTimerTick(){ }
 

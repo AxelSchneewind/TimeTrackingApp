@@ -13,9 +13,13 @@ import java.io.InputStreamReader;
 
 /**
  * @author Axel Schneewind
- * A class for creating file from String data and vice versa
+ * A class for creating files from string data and vice versa
  */
 public class FileHelper {
+
+    /**
+     * Names of the default files, can be customized
+     */
     public static String dataFile = "timetracking.txt", sessionFile = "session.data", exportFile = "export.txt";
 
     TimeTrackingActivity timeTrackingActivity;
@@ -56,7 +60,7 @@ public class FileHelper {
             StringBuffer sb = new StringBuffer();
             String line = reader.readLine();
             while (line != null) {
-                sb.append(line + "\n");
+                sb.append(line).append("\n");
                 line = reader.readLine();
             }
             string = sb.toString();
@@ -76,8 +80,7 @@ public class FileHelper {
      */
     public String readFromExternalFile(File path, String fileName){
         byte[] bytes = timeTrackingActivity.readBytesOfFile(path,fileName);
-        String string = new String(bytes);
-        return string;
+        return new String(bytes);
     }
 
     public FileHelper(TimeTrackingActivity timeTrackingActivity){
