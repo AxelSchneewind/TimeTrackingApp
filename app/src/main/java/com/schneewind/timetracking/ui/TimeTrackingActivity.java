@@ -38,6 +38,8 @@ public class TimeTrackingActivity  extends AppCompatActivity {
         if(getThreadByName(timerTickThreadName) == null){
             timerTickThread.setName(timerTickThreadName);
             timerTickThread.start();
+        } else{
+            timerTickThread = getThreadByName(timerTickThreadName);
         }
     }
 
