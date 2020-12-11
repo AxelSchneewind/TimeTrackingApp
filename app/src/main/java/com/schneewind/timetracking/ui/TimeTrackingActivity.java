@@ -43,6 +43,9 @@ public class TimeTrackingActivity  extends AppCompatActivity {
         }
     }
 
+    /**
+     * A sessionData file is read by the TimeTrackingData instance
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -50,21 +53,21 @@ public class TimeTrackingActivity  extends AppCompatActivity {
         getTimeTrackingData().readSessionData();
     }
 
+    /**
+     * The timerTickThread is interrupted by calling interruptTimerTick()
+     */
     @Override
     protected void onPause() {
         super.onPause();
-        getTimeTrackingData().saveSessionData();
-        timerTickThread.interrupt();
+        interruptTimerTick();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        timerTickThread.interrupt();
-        getTimeTrackingData().saveSessionData();
-        getTimeTrackingData().writeTrackersToDefaultFile();
-    }
 
+    /**
+     * A thread that calls onTimerTick operation once per second.
+     * This thread is started when this Activity is resumed and the thread is not already running.
+     * This thread is interrupted when this activity is paused (and instantly resumed if this Activity is paused by a different TimeTrackingActivity)
+     */
     public Thread timerTickThread = new Thread(){
         @Override
         public void run() {
@@ -86,6 +89,15 @@ public class TimeTrackingActivity  extends AppCompatActivity {
     };
 
     /**
+     * The timerTickThread is interrupted and the sessionData as well as all TimeTrackers are saved to their corresponding files.
+     */
+    public void interruptTimerTick(){
+        timerTickThread.interrupt();
+        getTimeTrackingData().saveSessionData();
+        getTimeTrackingData().writeTrackersToDefaultFile();
+    }
+
+    /**
      * A method returning the thread of the specified name
      * @param threadName a string containing the name of the searched thread
      * @return the thread of the given name, or null if there is none
@@ -97,6 +109,9 @@ public class TimeTrackingActivity  extends AppCompatActivity {
         return null;
     }
 
+    /**
+     * An operation that is called once per second, by timerTickThread
+     */
     protected void onTimerTick(){ }
 
     /**
@@ -106,6 +121,8 @@ public class TimeTrackingActivity  extends AppCompatActivity {
     public TimeTrackingData getTimeTrackingData(){
         return ((TimeTrackingApp)getApplication()).timeTrackingData;
     }
+
+
 
     /**
      * writes set of a bytes to any file in devices storage

@@ -15,10 +15,11 @@ import com.schneewind.timetracking.timetracking.TimeTrackingData;
 
 import java.util.ArrayList;
 
-public class TimeTrackerListAdapter extends BaseAdapter {
+public class TimeTrackingListAdapter extends BaseAdapter {
     Context context;
 
     TimeTrackingData timeTrackingData;
+    ArrayList<UpdateableUI> observingFragments = new ArrayList<>();
 
     LayoutInflater layoutInflater;
 
@@ -87,7 +88,15 @@ public class TimeTrackerListAdapter extends BaseAdapter {
         return view;
     }
 
-    public TimeTrackerListAdapter(Context context, TimeTrackingData timeTrackingData){
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        for (UpdateableUI ui: observingFragments) {
+            try {ui.UpdateUI();} catch (NullPointerException e){ e.printStackTrace(); }
+        }
+    }
+
+    public TimeTrackingListAdapter(Context context, TimeTrackingData timeTrackingData){
         this.context = context;
         this.timeTrackingData = timeTrackingData;
         this.layoutInflater = LayoutInflater.from(context);

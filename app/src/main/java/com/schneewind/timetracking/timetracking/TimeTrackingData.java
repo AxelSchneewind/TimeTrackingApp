@@ -3,8 +3,8 @@ package com.schneewind.timetracking.timetracking;
 import android.os.Environment;
 
 import com.schneewind.timetracking.FileHelper;
-import com.schneewind.timetracking.ui.TimeTrackerListAdapter;
 import com.schneewind.timetracking.ui.TimeTrackingActivity;
+import com.schneewind.timetracking.ui.TimeTrackingListAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,7 +19,7 @@ public class TimeTrackingData {
 
     ArrayList<TimeTracker> trackers = new ArrayList<>();
 
-    public TimeTrackerListAdapter listAdapter;
+    public TimeTrackingListAdapter listAdapter;
 
     public TimeTrackingData() {}
 

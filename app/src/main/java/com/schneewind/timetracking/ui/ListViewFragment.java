@@ -15,7 +15,7 @@ import com.schneewind.timetracking.timetracking.TimeTrackingData;
 
 public class ListViewFragment extends Fragment implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
     ListView trackerList;
-    TimeTrackerListAdapter adapter;
+    TimeTrackingListAdapter adapter;
 
     TimeTrackingData timeTrackingData;
 
@@ -30,7 +30,7 @@ public class ListViewFragment extends Fragment implements AdapterView.OnItemLong
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = new TimeTrackerListAdapter(getContext(), timeTrackingData);
+        adapter = new TimeTrackingListAdapter(getContext(), timeTrackingData);
         trackerList = view.findViewById(R.id.tracker_list);
         trackerList.setAdapter(adapter);
         trackerList.setOnItemClickListener(this);
@@ -55,8 +55,6 @@ public class ListViewFragment extends Fragment implements AdapterView.OnItemLong
      */
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        getActivity().findViewById(R.id.fragment_secondary).setVisibility(View.VISIBLE);
-        DetailViewFragment detailViewFragment = (DetailViewFragment) getActivity().getSupportFragmentManager().findFragmentByTag("DETAILVIEW");
-        detailViewFragment.setDisplayedTimeTracker(timeTrackingData.getTimeTracker(i));
+        ((MainActivity)getActivity()).enableDetails(timeTrackingData.getTimeTracker(i));
     }
 }

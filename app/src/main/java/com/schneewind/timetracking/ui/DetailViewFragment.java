@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.schneewind.timetracking.R;
 import com.schneewind.timetracking.timetracking.TimeTracker;
 
-public class DetailViewFragment extends Fragment {
+public class DetailViewFragment extends Fragment implements UpdateableUI {
 
     private TimeTracker displayedTimeTracker;
 
@@ -36,6 +36,7 @@ public class DetailViewFragment extends Fragment {
         trackerTimeTextView = (TextView) getActivity().findViewById(R.id.detailview_trackertime);
         trackerTargetTextView = (TextView) getActivity().findViewById(R.id.detailview_trackertarget);
 
+        ((MainActivity)getActivity()).getTimeTrackingData().listAdapter.observingFragments.add(this);
     }
 
     /**
@@ -50,15 +51,17 @@ public class DetailViewFragment extends Fragment {
     /**
      * Updates the UI elements of this fragment to match the data of the displayedTimeTracker
      */
+    @Override
     public void UpdateUI(){
+        displayedTimeTracker = ((MainActivity)getActivity()).getSelectedTimeTracker();
+
+        if(displayedTimeTracker == null) throw new NullPointerException();
+
         trackerNameTextView.setText(displayedTimeTracker.getName());
         trackerTimeTextView.setText(displayedTimeTracker.formatTime(TimeTracker.FormatType.FULL));
         trackerTargetTextView.setText(displayedTimeTracker.formatTargetTime(TimeTracker.FormatType.FULL));
     }
 
-
-    public DetailViewFragment(TimeTracker timeTracker){
-        displayedTimeTracker = timeTracker;
-    }
-    public DetailViewFragment(){}
 }
+
+

@@ -21,9 +21,11 @@ import com.schneewind.timetracking.R;
 import com.schneewind.timetracking.timetracking.TimeTracker;
 
 public class MainActivity extends TimeTrackingActivity {
-    public int NEWTIMETRACKER_REQUEST_CODE = 100;
-    public String NOTIFICATION_CHANNEL_ID = "123";
-    public int NOTIFICATION_ID = 155;
+    private final int NEWTIMETRACKER_REQUEST_CODE = 100;
+    private final String NOTIFICATION_CHANNEL_ID = "123";
+    private final int NOTIFICATION_ID = 155;
+
+    private TimeTracker selectedTimeTracker;
 
 
     @Override
@@ -36,7 +38,7 @@ public class MainActivity extends TimeTrackingActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: make switch setAllTimeTrackersActive
+                //FIXME: make switch setAllTimeTrackersActive
                 if(view.getId() == R.id.app_bar_switch_button)
                     getTimeTrackingData().setAllTimeTrackersActive(((Switch)view).isChecked());
             }
@@ -44,10 +46,12 @@ public class MainActivity extends TimeTrackingActivity {
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_secondary,new DetailViewFragment(), "DETAILVIEW").commit();
 
+
+        //FIXME: clicks are not received this way
         findViewById(R.id.content_main).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                findViewById(R.id.fragment_secondary).setVisibility(View.GONE);
+                disableDetails();
             }
         });
 
@@ -133,6 +137,41 @@ public class MainActivity extends TimeTrackingActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * Enables a detailview by making the DetailViewUI layout visible and setting its displayedTimeTracker to the given TimeTracker
+     * This operation also sets the selectedTimeTracker of this MainActivity to the given TimeTracker
+     * @param timeTracker the TimeTracker that should be displayed
+     */
+    public void enableDetails(TimeTracker timeTracker){
+        setSelectedTimeTracker(timeTracker);
+
+        findViewById(R.id.fragment_secondary).setVisibility(View.VISIBLE);
+
+        DetailViewFragment detailViewFragment = (DetailViewFragment) getSupportFragmentManager().findFragmentByTag("DETAILVIEW");
+        detailViewFragment.setDisplayedTimeTracker(getSelectedTimeTracker());
+    }
+    /**
+     * Enables the detailview without changing the selectedTimeTracker a.k.a displayedTimeTracker of the DetailViewUI
+     */
+    public void enableDetails(){ enableDetails(selectedTimeTracker); }
+
+    /**
+     * Disables the detailview by making the DetailViewUI layout invisible
+      */
+    public void disableDetails(){ findViewById(R.id.fragment_secondary).setVisibility(View.GONE); }
+
+    /**
+     * sets the selectedTimeTracker field of this class
+     * @param selectedTimeTracker the TimeTracker that should be selected
+     */
+    public void setSelectedTimeTracker(TimeTracker selectedTimeTracker){ this.selectedTimeTracker = selectedTimeTracker; }
+
+    /**
+     * returns the currently selected TimeTracker of this MainActivity
+     * @return
+     */
+    public TimeTracker getSelectedTimeTracker(){ return selectedTimeTracker;}
 
 
 
