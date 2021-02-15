@@ -91,6 +91,8 @@ public class TimeTrackingData {
         }
     }
 
+
+    //TODO make session file save and read unfinished log entries
     /**
      * Generating a file that stores data of the current session containing: current time, active TimeTrackers.
      * requires timeTrackingActivity of this TimeTrackingData instance to be assigned
@@ -103,7 +105,7 @@ public class TimeTrackingData {
 
         for (int i = 0; i < trackers.size(); i++) {
             TimeTracker tracker = trackers.get(i);
-            if (tracker.isActive()) data = data.concat(i + ";");
+            if (tracker.isActive()) data = data.concat(i + ";" );
         }
         FileHelper fileHelper = new FileHelper(timeTrackingActivity);
         fileHelper.writeToDefaultFile(FileHelper.sessionFile, data);

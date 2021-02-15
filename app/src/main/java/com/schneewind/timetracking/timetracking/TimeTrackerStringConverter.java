@@ -27,6 +27,7 @@ public class TimeTrackerStringConverter implements StringConversion<TimeTracker>
     }
 
 
+    //TODO implement functionality to  recognize old file versions and import the in a correct way
     /**
      * returns a string that can be saved in a text file
      * @return A string containing all the data of a TimeTracker
