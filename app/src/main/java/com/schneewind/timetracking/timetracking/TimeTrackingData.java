@@ -19,6 +19,11 @@ public class TimeTrackingData {
 
     ArrayList<TimeTracker> trackers = new ArrayList<>();
 
+    final String trackerSeparator = "\n######\n";
+
+    final TimeTrackerStringConverter trackerStringConverter = new TimeTrackerStringConverter('\n',';',',');
+
+
     public TimeTrackingListAdapter listAdapter;
 
     public TimeTrackingData() {}
@@ -33,10 +38,12 @@ public class TimeTrackingData {
 
         FileHelper fileHelper = new FileHelper(timeTrackingActivity);
         String data = fileHelper.readFromDefaultFile(FileHelper.dataFile);
-        String[] trackerStrings = data.split("\n");
+        String[] trackerStrings = data.split(trackerSeparator);
 
         for (String trackerString : trackerStrings) {
-            if(!trackerString.equals("")) trackers.add(TimeTracker.fromSavedString(trackerString));
+            if(!trackerString.equals("")){
+                trackers.add(trackerStringConverter.convertFromString(trackerString));
+            }
         }
     }
 
@@ -49,7 +56,7 @@ public class TimeTrackingData {
 
         String data = "";
         for (TimeTracker tracker : trackers) {
-            data = data.concat(tracker.toSaveableString() + "\n");
+            data = data.concat(trackerStringConverter.convertToString(tracker) + trackerSeparator);
         }
         FileHelper fileHelper = new FileHelper(timeTrackingActivity);
         fileHelper.writeToDefaultFile(FileHelper.dataFile, data);
@@ -63,7 +70,7 @@ public class TimeTrackingData {
         if(timeTrackingActivity == null) return;
         String data = "";
         for (TimeTracker tracker : trackers) {
-            data = data.concat(tracker.toSaveableString() + "\n");
+            data = data.concat(trackerStringConverter.convertToString(tracker) + trackerSeparator);
         }
 
         FileHelper fileHelper = new FileHelper(timeTrackingActivity);
@@ -77,10 +84,10 @@ public class TimeTrackingData {
     public void importTrackers(){
         FileHelper fileHelper = new FileHelper(timeTrackingActivity);
         String data = fileHelper.readFromExternalFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FileHelper.exportFile);
-        String[] trackerStrings = data.split("\n");
+        String[] trackerStrings = data.split(trackerSeparator);
 
         for (String trackerString : trackerStrings) {
-            if(!trackerString.equals("")) trackers.add(TimeTracker.fromSavedString(trackerString));
+            if(!trackerString.equals("")) trackers.add(trackerStringConverter.convertFromString(trackerString));
         }
     }
 

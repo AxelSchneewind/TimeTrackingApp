@@ -19,9 +19,11 @@ import androidx.core.app.NotificationManagerCompat;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.schneewind.timetracking.R;
 import com.schneewind.timetracking.timetracking.TimeTracker;
+import com.schneewind.timetracking.timetracking.log.Log;
+import com.schneewind.timetracking.timetracking.log.UnfinishedLogEntry;
 
 public class MainActivity extends TimeTrackingActivity {
-    private final int NEWTIMETRACKER_REQUEST_CODE = 100;
+    private final int NEW_TIME_TRACKER_REQUEST_CODE = 100;
     private final String NOTIFICATION_CHANNEL_ID = "123";
     private final int NOTIFICATION_ID = 155;
 
@@ -60,7 +62,7 @@ public class MainActivity extends TimeTrackingActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), NewTimeTrackerActivity.class);
-            MainActivity.this.startActivityForResult(intent, NEWTIMETRACKER_REQUEST_CODE);
+            MainActivity.this.startActivityForResult(intent, NEW_TIME_TRACKER_REQUEST_CODE);
         });
     }
 
@@ -95,8 +97,8 @@ public class MainActivity extends TimeTrackingActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == NEWTIMETRACKER_REQUEST_CODE && resultCode == RESULT_OK) {
-            getTimeTrackingData().addTimeTracker(new TimeTracker(data.getStringExtra("TrackerName"), data.getIntExtra("TrackerInitialValue",0), data.getIntExtra("TrackerTarget",0)));
+        if(requestCode == NEW_TIME_TRACKER_REQUEST_CODE && resultCode == RESULT_OK) {
+            getTimeTrackingData().addTimeTracker(new TimeTracker(data.getStringExtra("TrackerName"), data.getIntExtra("TrackerInitialValue",0), data.getIntExtra("TrackerTarget",0), new Log(), UnfinishedLogEntry.create()));
             getTimeTrackingData().writeTrackersToDefaultFile();
         }
     }

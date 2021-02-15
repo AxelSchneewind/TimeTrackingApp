@@ -1,18 +1,32 @@
 package com.schneewind.timetracking.timetracking;
 
 
-/**
- * @author Axel Schneewind
- * A class for storing information of a TimeTracker
- */
-public class TimeTracker {
+import com.schneewind.timetracking.timetracking.log.Log;
+import com.schneewind.timetracking.timetracking.log.UnfinishedLogEntry;
 
+import java.time.Instant;
+import java.util.Date;
+
+/**
+ * A class for storing information of a TimeTracker
+ * @author Axel Schneewind
+ * */
+public class TimeTracker {
     private final String name;
     private int time;
     private int targetTime;
 
     private boolean active;
 
+    private final UnfinishedLogEntry unfinishedLogEntry;
+
+    private final Log log;
+
+
+    /**
+     * getter for the name of the TimeTracker
+     * @return the name of this TimeTracker
+     */
     public String getName(){ return name; }
 
     /**
@@ -35,11 +49,30 @@ public class TimeTracker {
     public boolean isActive(){ return active; }
 
     /**
+     * getter for the current unfinished log entry of this TimeTracker
+     * @return
+     */
+    public UnfinishedLogEntry getUnfinishedLogEntry() {
+        return unfinishedLogEntry;
+    }
+
+    /**
      * sets the value of active, determining whether the tracker should count or not
+     * if this TimeTracker gets disabled, a new LogEntry is added to its log
      * @param active the new value of active, if none is given active is negated
      */
-    public void setActive(boolean active){ this.active = active; }
-    public void setActive(){ this.active = !this.active;}
+    public void setActive(boolean active){
+        if(active == isActive()){ return; }
+
+        if(isActive()){
+            log.addEntry(unfinishedLogEntry.stop(Date.from(Instant.now()).getTime()));
+        } else {
+            unfinishedLogEntry.start("", Date.from(Instant.now()).getTime());
+        }
+
+        this.active = active;
+    }
+    public void setActive(){ setActive(!this.isActive());}
 
     /**
      * sets the Time of the Tracker
@@ -64,6 +97,7 @@ public class TimeTracker {
     }
 
 
+    //TODO move time formatting to separate class
     /**
      * Formats the given time and returns a String
      * @param formatType the FormatType determining what the String should look like
@@ -118,34 +152,31 @@ public class TimeTracker {
         return formatTime(formatType, targetTime);
     }
 
-    /**
-     * returns a string that can be saved in a text file
-     * @return A string containing name and time of a TimeTracker
-     */
-    public String toSaveableString(){
-        String formattedString = String.format("%s;%d;%d",name, time,targetTime);
-        return formattedString;
-    }
 
     /**
-     * Constructs a TimeTracker from a saved String
-     * @param savedString a string that has been read from a file
-     * @return a TimeTracker with the data from the string
+     * returns the log object of this time tracker
+     * @return
      */
-    public static TimeTracker fromSavedString(String savedString){
-        String[] segments = savedString.split(";");
-
-        return new TimeTracker(segments[0], Integer.parseInt(segments[1]), Integer.parseInt(segments[2]));
+    public Log getLog() {
+        return log;
     }
 
-    public TimeTracker(String name, int time, int targetTime){
+
+    /**
+     * Default constructor of a TimeTracker
+     * @param name the name of the TimeTracker
+     * @param time the amount of time stored int the TimeTracker
+     * @param targetTime the target amount of time of the TimeTracker
+     * @param log the log of the TimeTracker
+     */
+    public TimeTracker(String name, int time, int targetTime, Log log, UnfinishedLogEntry unfinishedLogEntry){
         this.name = name;
         this.time = time;
         this.targetTime = targetTime;
         this.active = false;
+        this.log = log;
+        this.unfinishedLogEntry = unfinishedLogEntry;
     }
-
-
 
     public enum FormatType{
         HOUR,

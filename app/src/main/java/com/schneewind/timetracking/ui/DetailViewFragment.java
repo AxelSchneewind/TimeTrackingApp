@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.schneewind.timetracking.R;
+import com.schneewind.timetracking.base.UpdateableUI;
 import com.schneewind.timetracking.timetracking.TimeTracker;
 
 public class DetailViewFragment extends Fragment implements UpdateableUI {

@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.schneewind.timetracking.R;
+import com.schneewind.timetracking.base.UpdateableUI;
 import com.schneewind.timetracking.timetracking.TimeTracker;
 import com.schneewind.timetracking.timetracking.TimeTrackingData;
 
