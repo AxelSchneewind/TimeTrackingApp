@@ -45,7 +45,7 @@ public class TimeTrackerStringConverter implements StringConversion<TimeTracker>
         stringBuilder.append(object.isActive()).append(getSeparator());                                                                     //3 active
         stringBuilder.append(unfinishedLogEntryStringConverter.convertToString(object.getUnfinishedLogEntry())).append(getSeparator());     //4 unfinished log entry
         stringBuilder.append(logStringConverter.convertToString(object.getLog())).append(getSeparator());                                   //5 log
-
+        stringBuilder.append("end").append(object.getName());
 
         return stringBuilder.toString();
     }

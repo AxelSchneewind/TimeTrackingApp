@@ -10,7 +10,7 @@ public class UnfinishedLogEntry {
 
 
     private long startingTime;
-    private String info;
+    private String info = "";
 
     /**
      * creates a new inactive unfinished log entry
