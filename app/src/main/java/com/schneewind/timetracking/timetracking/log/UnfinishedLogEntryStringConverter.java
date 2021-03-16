@@ -1,22 +1,21 @@
 package com.schneewind.timetracking.timetracking.log;
 
+import com.schneewind.timetracking.base.NestedStringConversion;
 import com.schneewind.timetracking.base.StringConversion;
 
 /**
  * a class for constructing unfinished log entries from strings and vice versa
  */
-public class UnfinishedLogEntryStringConverter implements StringConversion<UnfinishedLogEntry> {
-    final char separator;
-    final char inActivityMarker;
+public class UnfinishedLogEntryStringConverter extends NestedStringConversion<UnfinishedLogEntry> {
+    final String inActivityMarker="inactive";
 
     /**
      * default constructor
      * @param separator the char used for separating the fields
      * @param inActivityMarker a char for indicating that this unfinished log entry is not active
      */
-    public UnfinishedLogEntryStringConverter(char separator, char inActivityMarker) {
-        this.separator = separator;
-        this.inActivityMarker = inActivityMarker;
+    public UnfinishedLogEntryStringConverter(String separator, String enterNextLayer, String exitNextLayer) {
+        super(separator, enterNextLayer, exitNextLayer);
     }
 
     @Override
@@ -24,8 +23,7 @@ public class UnfinishedLogEntryStringConverter implements StringConversion<Unfin
         StringBuilder stringBuilder = new StringBuilder();
 
         if(object.isActive()){
-            stringBuilder.append(object.getInfo());
-            stringBuilder.append(separator);
+            stringBuilder.append(object.getInfo()).append(separator);
             stringBuilder.append(object.getStartingTime());
         } else{
             stringBuilder.append(inActivityMarker);
@@ -33,23 +31,22 @@ public class UnfinishedLogEntryStringConverter implements StringConversion<Unfin
         return stringBuilder.toString();
     }
 
+
+    /**
+     * A function that converts a given string to an unfinished log entry
+     * @param string
+     * @return
+     */
     @Override
     public UnfinishedLogEntry convertFromString(String string) {
         UnfinishedLogEntry unfinishedLogEntry = UnfinishedLogEntry.create();
 
-        if(!string.equals(inActivityMarker)){
-            String[] strings = string.split(String.valueOf(getSeparator()));
+        if(!string.equals(String.valueOf(inActivityMarker))){
+            String[] strings = string.split(separator);
 
             unfinishedLogEntry.start(strings[0], Long.parseLong(strings[1]));
         }
 
         return unfinishedLogEntry;
     }
-
-    @Override
-    public char getSeparator() {
-        return separator;
-    }
-
-
 }

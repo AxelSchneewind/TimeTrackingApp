@@ -82,4 +82,15 @@ public class Log {
             return (int)(entry1.getStartTime() - entry2.getStartTime());
         }
     };
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        for (LogEntry entry : logEntries) {
+            hash += entry.getInfo().hashCode() + entry.getStartTime() + entry.getStopTime();
+        }
+        return hash;
+    }
 }
+
+

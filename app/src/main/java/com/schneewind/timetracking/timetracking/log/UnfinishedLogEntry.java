@@ -63,4 +63,9 @@ public class UnfinishedLogEntry {
     public String getInfo() {
         return info;
     }
+
+    @Override
+    public int hashCode() {
+        return (int) (info.hashCode() + (active ? 1 : 0) + startingTime);
+    }
 }

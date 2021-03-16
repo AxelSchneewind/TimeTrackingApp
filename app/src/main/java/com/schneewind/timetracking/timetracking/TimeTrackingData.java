@@ -21,7 +21,7 @@ public class TimeTrackingData {
 
     final String trackerSeparator = "\n######\n";
 
-    final TimeTrackerStringConverter trackerStringConverter = new TimeTrackerStringConverter('\n',';',',');
+    final TimeTrackerStringConverterOld trackerStringConverter = new TimeTrackerStringConverterOld('\n',';',',');
 
 
     public TimeTrackingListAdapter listAdapter;

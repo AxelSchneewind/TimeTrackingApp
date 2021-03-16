@@ -178,6 +178,12 @@ public class TimeTracker {
         this.unfinishedLogEntry = unfinishedLogEntry;
     }
 
+
+    @Override
+    public int hashCode() {
+        return (int) (getName().toCharArray().hashCode() + getTime() + getTargetTime() + (isActive() ? 1 : 0)) * getLog().hashCode() * getUnfinishedLogEntry().hashCode() ;
+    }
+
     public enum FormatType{
         HOUR,
         FULL

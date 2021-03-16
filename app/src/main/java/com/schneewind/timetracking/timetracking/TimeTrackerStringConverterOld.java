@@ -8,7 +8,7 @@ import com.schneewind.timetracking.timetracking.log.UnfinishedLogEntryStringConv
  * A class that constructs TimeTrackers from strings and vice versa. It can be used to store TimeTrackers in text files
  * @author Axel Schneewind
  * */
-public class TimeTrackerStringConverter implements StringConversion<TimeTracker>{
+public class TimeTrackerStringConverterOld implements StringConversion<TimeTracker>{
     final char separator;
 
     final LogStringConverter logStringConverter;
@@ -20,20 +20,21 @@ public class TimeTrackerStringConverter implements StringConversion<TimeTracker>
      * @param logSeparator  the char used to separate fields of the log
      * @param separator the char to be used for separating fields of the timetracker
      */
-    public TimeTrackerStringConverter(char separator, char logSeparator, char logEntrySeparator) {
+    public TimeTrackerStringConverterOld(char separator, char logSeparator, char logEntrySeparator) {
         this.separator = separator;
         this.logStringConverter = new LogStringConverter(logSeparator, logEntrySeparator);
-        this.unfinishedLogEntryStringConverter = new UnfinishedLogEntryStringConverter('*',logEntrySeparator);
+        this.unfinishedLogEntryStringConverter = new UnfinishedLogEntryStringConverter(logEntrySeparator, '*');
     }
 
 
-    //TODO implement functionality to  recognize old file versions and import the in a correct way
+    //TODO implement functionality to  recognize old file versions and import them in a correct way
     /**
      * returns a string that can be saved in a text file
      * @return A string containing all the data of a TimeTracker
      */
     @Override
     public String convertToString(TimeTracker object) {
+        //legacy file conversion
         //String formattedString = String.format("%s;%d;%d",object.getName(), object.getTime(),object.getTargetTime());
         //return formattedString;
 
@@ -45,7 +46,6 @@ public class TimeTrackerStringConverter implements StringConversion<TimeTracker>
         stringBuilder.append(object.isActive()).append(getSeparator());                                                                     //3 active
         stringBuilder.append(unfinishedLogEntryStringConverter.convertToString(object.getUnfinishedLogEntry())).append(getSeparator());     //4 unfinished log entry
         stringBuilder.append(logStringConverter.convertToString(object.getLog())).append(getSeparator());                                   //5 log
-        stringBuilder.append("end").append(object.getName());
 
         return stringBuilder.toString();
     }
@@ -64,7 +64,6 @@ public class TimeTrackerStringConverter implements StringConversion<TimeTracker>
         return result;
     }
 
-    @Override
     public char getSeparator() {
         return separator;
     }

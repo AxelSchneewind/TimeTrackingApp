@@ -1,19 +1,19 @@
 package com.schneewind.timetracking.timetracking.log;
 
+import com.schneewind.timetracking.base.NestedStringConversion;
 import com.schneewind.timetracking.base.StringConversion;
 
 /**
  * A class for constructing log entries from strings and vice versa
  */
-public class LogEntryStringConverter implements StringConversion<LogEntry> {
-    final char separator;
+public class LogEntryStringConverter extends NestedStringConversion<LogEntry> {
 
     /**
      * default constructor for a log entry string converter
      * @param separator the character to be used for separating fields
      */
-    public LogEntryStringConverter(char separator) {
-        this.separator = separator;
+    public LogEntryStringConverter(String separator, String enterNextLayer, String exitNextLayer) {
+        super(separator, enterNextLayer, exitNextLayer);
     }
 
     /**
@@ -25,9 +25,9 @@ public class LogEntryStringConverter implements StringConversion<LogEntry> {
     public String convertToString(LogEntry object) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(object.getInfo() + getSeparator());
-        stringBuilder.append(object.getStartTime() + getSeparator());
-        stringBuilder.append(object.getStopTime() + getSeparator());
+        stringBuilder.append(object.getInfo()).append(getSeparator());
+        stringBuilder.append(object.getStartTime()).append(getSeparator());
+        stringBuilder.append(object.getStopTime());
 
         return stringBuilder.toString();
     }
@@ -42,10 +42,5 @@ public class LogEntryStringConverter implements StringConversion<LogEntry> {
         String[] strings = string.split(String.valueOf(getSeparator()));
 
         return new LogEntry(Long.parseLong(strings[1]), Long.parseLong(strings[2]),strings[0]);
-    }
-
-    @Override
-    public char getSeparator() {
-        return separator;
     }
 }

@@ -176,7 +176,6 @@ public class MainActivity extends TimeTrackingActivity {
     public TimeTracker getSelectedTimeTracker(){ return selectedTimeTracker;}
 
 
-
     /**
      * launches the notification for the app
      */
