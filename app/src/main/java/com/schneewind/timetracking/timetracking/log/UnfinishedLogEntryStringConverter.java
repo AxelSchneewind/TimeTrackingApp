@@ -1,21 +1,20 @@
 package com.schneewind.timetracking.timetracking.log;
 
-import com.schneewind.timetracking.base.NestedStringConversion;
-import com.schneewind.timetracking.base.StringConversion;
+import com.schneewind.timetracking.base.NestedStringConverter;
+
+import java.util.List;
 
 /**
  * a class for constructing unfinished log entries from strings and vice versa
  */
-public class UnfinishedLogEntryStringConverter extends NestedStringConversion<UnfinishedLogEntry> {
+public class UnfinishedLogEntryStringConverter extends NestedStringConverter<UnfinishedLogEntry> {
     final String inActivityMarker="inactive";
 
     /**
      * default constructor
-     * @param separator the char used for separating the fields
-     * @param inActivityMarker a char for indicating that this unfinished log entry is not active
      */
-    public UnfinishedLogEntryStringConverter(String separator, String enterNextLayer, String exitNextLayer) {
-        super(separator, enterNextLayer, exitNextLayer);
+    public UnfinishedLogEntryStringConverter() {
+        super();
     }
 
     @Override
@@ -23,7 +22,7 @@ public class UnfinishedLogEntryStringConverter extends NestedStringConversion<Un
         StringBuilder stringBuilder = new StringBuilder();
 
         if(object.isActive()){
-            stringBuilder.append(object.getInfo()).append(separator);
+            stringBuilder.append(object.getInfo()).append(getSeparator());
             stringBuilder.append(object.getStartingTime());
         } else{
             stringBuilder.append(inActivityMarker);
@@ -42,11 +41,21 @@ public class UnfinishedLogEntryStringConverter extends NestedStringConversion<Un
         UnfinishedLogEntry unfinishedLogEntry = UnfinishedLogEntry.create();
 
         if(!string.equals(String.valueOf(inActivityMarker))){
-            String[] strings = string.split(separator);
+            String[] strings = string.split(String.valueOf(getSeparator()));
 
             unfinishedLogEntry.start(strings[0], Long.parseLong(strings[1]));
         }
 
         return unfinishedLogEntry;
+    }
+
+    @Override
+    protected List<String> toStringSequence(UnfinishedLogEntry object) {
+        return null;//TODO
+    }
+
+    @Override
+    protected UnfinishedLogEntry fromStringSequence(List<String> strings) {
+        return null; //TODO
     }
 }

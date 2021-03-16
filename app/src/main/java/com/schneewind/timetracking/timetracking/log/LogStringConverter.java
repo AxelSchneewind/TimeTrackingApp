@@ -1,6 +1,6 @@
 package com.schneewind.timetracking.timetracking.log;
 
-import com.schneewind.timetracking.base.NestedStringConversion;
+import com.schneewind.timetracking.base.NestedStringConverter;
 import com.schneewind.timetracking.base.StringConversion;
 
 import java.util.ArrayList;
@@ -10,18 +10,16 @@ import java.util.List;
  * A class for constructing timetracking logs from strings and vice versa
  * @author Axel Schneewind
  */
-public class LogStringConverter extends NestedStringConversion<Log> {
+public class LogStringConverter extends NestedStringConverter<Log> {
     private final StringConversion<LogEntry> logEntryStringConverter;
 
 
     /**
      * default constructor for a log string converter
-     * @param logEntrySeparator the char to be used for separating the fields of log entries
-     * @param logSeparator the char used for separating log entries
      */
-    public LogStringConverter(String separator, String enterNextLayer, String exitNextLayer) {
-        super(separator, enterNextLayer, exitNextLayer);
-        this.logEntryStringConverter = new LogEntryStringConverter(logEntrySeparator);
+    public LogStringConverter() {
+        super();
+        this.logEntryStringConverter = new LogEntryStringConverter();
     }
 
     /**
@@ -58,6 +56,16 @@ public class LogStringConverter extends NestedStringConversion<Log> {
         }
 
         return new Log(entries);
+    }
+
+    @Override
+    protected List<String> toStringSequence(Log object) {
+        return null;//TODO
+    }
+
+    @Override
+    protected Log fromStringSequence(List<String> strings) {
+        return null;//TODO
     }
 
 

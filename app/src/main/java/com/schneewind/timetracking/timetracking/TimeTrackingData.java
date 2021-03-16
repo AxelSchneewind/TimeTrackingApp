@@ -141,7 +141,7 @@ public class TimeTrackingData {
      * requires the timeTrackingActivity of this TimeTrackingData instance to be assigned
      */
     public void clearSessionData(){
-        if(timeTrackingActivity == null) return;
+        if(timeTrackingActivity == null) throw new IllegalStateException();
         FileHelper fileHelper = new FileHelper(timeTrackingActivity);
         String data = "";
         fileHelper.writeToDefaultFile(FileHelper.sessionFile, data);
@@ -203,7 +203,7 @@ public class TimeTrackingData {
         for (int i = 0; i < trackers.size(); i++) {
             if(timeTracker.equals(trackers.get(i))) return i;
         }
-        return -1;
+        throw new IllegalArgumentException();
     }
 
     /**

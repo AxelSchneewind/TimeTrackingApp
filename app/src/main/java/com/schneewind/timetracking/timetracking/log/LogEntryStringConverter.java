@@ -1,19 +1,19 @@
 package com.schneewind.timetracking.timetracking.log;
 
-import com.schneewind.timetracking.base.NestedStringConversion;
-import com.schneewind.timetracking.base.StringConversion;
+import com.schneewind.timetracking.base.NestedStringConverter;
+
+import java.util.List;
 
 /**
  * A class for constructing log entries from strings and vice versa
  */
-public class LogEntryStringConverter extends NestedStringConversion<LogEntry> {
+public class LogEntryStringConverter extends NestedStringConverter<LogEntry> {
 
     /**
      * default constructor for a log entry string converter
-     * @param separator the character to be used for separating fields
      */
-    public LogEntryStringConverter(String separator, String enterNextLayer, String exitNextLayer) {
-        super(separator, enterNextLayer, exitNextLayer);
+    public LogEntryStringConverter() {
+        super();
     }
 
     /**
@@ -42,5 +42,18 @@ public class LogEntryStringConverter extends NestedStringConversion<LogEntry> {
         String[] strings = string.split(String.valueOf(getSeparator()));
 
         return new LogEntry(Long.parseLong(strings[1]), Long.parseLong(strings[2]),strings[0]);
+    }
+
+
+    @Override
+    protected List<String> toStringSequence(LogEntry object) {
+        return null;
+        //TODO
+    }
+
+    @Override
+    protected LogEntry fromStringSequence(List<String> strings) {
+        return null;
+        //TODO
     }
 }

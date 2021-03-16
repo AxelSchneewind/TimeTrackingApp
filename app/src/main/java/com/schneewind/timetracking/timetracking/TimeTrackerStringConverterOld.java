@@ -4,10 +4,14 @@ import com.schneewind.timetracking.base.StringConversion;
 import com.schneewind.timetracking.timetracking.log.LogStringConverter;
 import com.schneewind.timetracking.timetracking.log.UnfinishedLogEntryStringConverter;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 /**
  * A class that constructs TimeTrackers from strings and vice versa. It can be used to store TimeTrackers in text files
  * @author Axel Schneewind
  * */
+@Deprecated
 public class TimeTrackerStringConverterOld implements StringConversion<TimeTracker>{
     final char separator;
 
@@ -22,8 +26,8 @@ public class TimeTrackerStringConverterOld implements StringConversion<TimeTrack
      */
     public TimeTrackerStringConverterOld(char separator, char logSeparator, char logEntrySeparator) {
         this.separator = separator;
-        this.logStringConverter = new LogStringConverter(logSeparator, logEntrySeparator);
-        this.unfinishedLogEntryStringConverter = new UnfinishedLogEntryStringConverter(logEntrySeparator, '*');
+        this.logStringConverter = new LogStringConverter();
+        this.unfinishedLogEntryStringConverter = new UnfinishedLogEntryStringConverter();
     }
 
 
@@ -62,6 +66,11 @@ public class TimeTrackerStringConverterOld implements StringConversion<TimeTrack
         result.setActive(Boolean.parseBoolean(segments[3]));
 
         return result;
+    }
+
+    @Override
+    public Collection<String> getReservedStrings() {
+        return Arrays.asList(String.valueOf(getSeparator()));
     }
 
     public char getSeparator() {
