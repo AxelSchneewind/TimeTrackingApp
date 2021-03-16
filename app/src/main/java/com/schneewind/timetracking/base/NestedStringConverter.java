@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -18,7 +19,7 @@ public abstract class NestedStringConverter<T> implements  StringConversion<T> {
     private final char goDeeper;
     private final char goUp;
 
-    private final List<StringConversion> nestedConverters;
+    protected final List<StringConversion> nestedConverters;
 
 
     /**
@@ -55,13 +56,23 @@ public abstract class NestedStringConverter<T> implements  StringConversion<T> {
 
 
     /**
-     * constructor for a default converter using brackets and semicoli for sepration
+     * constructor for a default converter using brackets and semicolons for separation
      */
     protected NestedStringConverter() {
         this.separator = ';';
         this.goDeeper = '{';
         this.goUp = '}';
         this.nestedConverters = new ArrayList<>();
+    }
+
+    /**
+     * constructor for a default converter using brackets and semicolons for separation
+     */
+    protected NestedStringConverter(List<StringConversion> nestedConverters) {
+        this.separator = ';';
+        this.goDeeper = '{';
+        this.goUp = '}';
+        this.nestedConverters = nestedConverters;
     }
 
 
@@ -91,16 +102,16 @@ public abstract class NestedStringConverter<T> implements  StringConversion<T> {
      * @param content the String to sanitize
      * @return a new String that does not contain any reserved Strings
      */
-    protected String sanitize(String content){
-        StringBuilder sanitizedString = new StringBuilder(content);
+    public String sanitize(Object content){
+        StringBuilder sanitizedString = new StringBuilder(content.toString());
 
         Collection<String> reservedStrings = getReservedStrings();
 
         for(final String reservedString : reservedStrings){
-            if(content.contains(reservedString)){
+            while(sanitizedString.toString().contains(reservedString)){
                 int index = sanitizedString.indexOf(reservedString);
-                sanitizedString.replace(index, reservedString.length(), "");
-            }
+                sanitizedString.replace(index, index + reservedString.length(), "");
+            } //FIXME
         }
 
         return sanitizedString.toString();
@@ -119,8 +130,6 @@ public abstract class NestedStringConverter<T> implements  StringConversion<T> {
 
         List<String> stringSequence = toStringSequence(object);
 
-        stringSequence.replaceAll((this::sanitize));
-
         stringSequence.forEach(s -> result.append(s).append(separator));
 
         return result.toString();
@@ -137,18 +146,43 @@ public abstract class NestedStringConverter<T> implements  StringConversion<T> {
      */
     @Override
     public T convertFromString(String string) {
-        List<String> nestedStrings = Arrays.asList (string.split(String.valueOf(getGoDeeper())));
-        nestedStrings.replaceAll(s -> s.split(String.valueOf(getGoUp()))[0]);
+        if(string.charAt(0) == (getGoDeeper())){
+            string = string.substring(1);
+        }
+        if(string.charAt(string.length() - 1) == (getGoUp())){
+            string = string.substring(0, string.length() - 1);
+        }
 
-        nestedStrings.stream().forEach(s -> string.replace(s,""));
+        return fromStringSequence(getStringSequence(string));
+    }
 
-        List<String> stringSequence = Arrays.asList(string.split(String.valueOf(getSeparator())));
-        Iterator<String> nestedStringIterator = nestedStrings.iterator();
-        stringSequence.stream()
-                .filter(s -> s.equals(String.valueOf(getGoDeeper()) + String.valueOf(getGoUp())))
-                .forEach(s -> nestedStringIterator.next());
+    /**
+     * a function that splits a String into its substrings
+     * @param string the string to split
+     * @return a List of strings, in order
+     */
+    private List<String> getStringSequence(final String string){
+        List<String> sequence = new LinkedList<>();
 
-        return fromStringSequence(stringSequence);
+        StringBuilder stringBuilder = new StringBuilder();
+        int depth = 0;
+        for(char c : string.toCharArray()){
+            if(depth != 0 || c != getSeparator()){
+                stringBuilder.append(c);
+            }
+            if(c == getGoDeeper()){
+                depth++;
+            }
+            else if(c == getGoUp()){
+                depth--;
+            }
+            else if(depth == 0 && c == getSeparator()){
+                sequence.add(stringBuilder.toString());
+                stringBuilder = new StringBuilder();
+            }
+        }
+
+        return sequence;
     }
 
     protected abstract List<String> toStringSequence(T object);

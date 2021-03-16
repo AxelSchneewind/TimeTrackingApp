@@ -4,6 +4,7 @@ import com.schneewind.timetracking.base.NestedStringConverter;
 import com.schneewind.timetracking.base.StringConversion;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -13,60 +14,34 @@ import java.util.List;
 public class LogStringConverter extends NestedStringConverter<Log> {
     private final StringConversion<LogEntry> logEntryStringConverter;
 
-
     /**
      * default constructor for a log string converter
      */
-    public LogStringConverter() {
+    public LogStringConverter(char noInfoMarker) {
         super();
-        this.logEntryStringConverter = new LogEntryStringConverter();
+        this.logEntryStringConverter = new LogEntryStringConverter(noInfoMarker);
     }
 
-    /**
-     * generates a string containing all the data stored in a given Log object
-     * @param object the Log to convert
-     * @return
-     */
+
     @Override
-    public String convertToString(Log object) {
-        StringBuilder stringBuilder = new StringBuilder();
+    protected List<String> toStringSequence(Log object) {
+        List<String> sequence = new LinkedList<>();
 
         for(LogEntry entry : object.getLogEntries()){
-            stringBuilder.append(logEntryStringConverter.convertToString(entry));
-            stringBuilder.append(getSeparator());
+            sequence.add(getGoDeeper() + logEntryStringConverter.convertToString(entry) + getGoUp());
         }
 
-        return stringBuilder.toString();
+        return sequence;
     }
 
-
-    /**
-     * constructs a Log object from a given String
-     * @param string the string to convert
-     * @return the constructed log object
-     */
     @Override
-    public Log convertFromString(String string) {
-        List<LogEntry> entries = new ArrayList<>();
+    protected Log fromStringSequence(List<String> strings) {
+        List<LogEntry> entries = new LinkedList<>();
 
-        String[] entryStrings = string.split(String.valueOf(getSeparator()));
-
-        for(String entry  : entryStrings){
+        for(String entry  : strings){
             entries.add(logEntryStringConverter.convertFromString(entry));
         }
 
         return new Log(entries);
     }
-
-    @Override
-    protected List<String> toStringSequence(Log object) {
-        return null;//TODO
-    }
-
-    @Override
-    protected Log fromStringSequence(List<String> strings) {
-        return null;//TODO
-    }
-
-
 }

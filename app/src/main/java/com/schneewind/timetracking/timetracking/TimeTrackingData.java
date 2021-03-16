@@ -15,13 +15,16 @@ import java.util.Calendar;
  * conatains methods for reading/writing TimeTrackers to files by using the FileHelper methods
  */
 public class TimeTrackingData {
-    TimeTrackingActivity timeTrackingActivity;
+    //TODO review usage of this reference and remove it
+    private TimeTrackingActivity timeTrackingActivity;
 
-    ArrayList<TimeTracker> trackers = new ArrayList<>();
+    private final ArrayList<TimeTracker> trackers = new ArrayList<>();
 
-    final String trackerSeparator = "\n######\n";
+    private final String trackerSeparator = "\nnewtracker\n";
 
-    final TimeTrackerStringConverterOld trackerStringConverter = new TimeTrackerStringConverterOld('\n',';',',');
+
+    private final TimeTrackerStringConverterOld trackerStringConverterOld = new TimeTrackerStringConverterOld('\n',';',',');
+    private final TimeTrackerStringConverter trackerStringConverter = new TimeTrackerStringConverter();
 
 
     public TimeTrackingListAdapter listAdapter;
@@ -33,6 +36,8 @@ public class TimeTrackingData {
      * requires timeTrackingActivity of this TimeTrackingData instance to be assigned
      */
     public void readTrackersFromDefaultFile(){
+        //TODO: implement functionality of reading files from older versions
+
         if (timeTrackingActivity == null) return;
         trackers.clear();
 

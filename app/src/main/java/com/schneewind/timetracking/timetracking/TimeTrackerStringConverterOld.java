@@ -26,7 +26,7 @@ public class TimeTrackerStringConverterOld implements StringConversion<TimeTrack
      */
     public TimeTrackerStringConverterOld(char separator, char logSeparator, char logEntrySeparator) {
         this.separator = separator;
-        this.logStringConverter = new LogStringConverter();
+        this.logStringConverter = new LogStringConverter('#');
         this.unfinishedLogEntryStringConverter = new UnfinishedLogEntryStringConverter();
     }
 

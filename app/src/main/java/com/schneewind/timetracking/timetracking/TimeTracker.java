@@ -5,6 +5,7 @@ import com.schneewind.timetracking.timetracking.log.Log;
 import com.schneewind.timetracking.timetracking.log.UnfinishedLogEntry;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -181,7 +182,7 @@ public class TimeTracker {
 
     @Override
     public int hashCode() {
-        return (int) (getName().toCharArray().hashCode() + getTime() + getTargetTime() + (isActive() ? 1 : 0)) * getLog().hashCode() * getUnfinishedLogEntry().hashCode() ;
+        return (Arrays.hashCode(getName().toCharArray()) + getTime() + getTargetTime() + (isActive() ? 1 : 0)) * getLog().hashCode() * getUnfinishedLogEntry().hashCode() ;
     }
 
     public enum FormatType{
